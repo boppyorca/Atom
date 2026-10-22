@@ -85,5 +85,17 @@
   "skillDuplicate": "This skill is already on your profile",
   "confidenceSelfClaimed": "Self-claimed",
   "confidenceEvidenced": "Has evidence",
-  "confidenceEndorsed": "Endorsed"
+  "confidenceEndorsed": "Endorsed",
+  "salaryRoleLabel": "Role",
+  "salaryLookup": "See the numbers",
+  "salaryInsufficient": "Not enough data yet",
+  "salaryContributionRequired": "Add one salary to see the numbers",
+  "salaryContribute": "Add a salary",
+  "salaryEntryTitle": "Salary entry",
+  "salaryAmountLabel": "Gross monthly pay (VND)",
+  "salaryPrivate": "Nobody can see your individual salary.",
+  "salaryRequired": "Fill in all 4 fields",
+  "salaryDuplicate": "You already added this salary",
+  "salaryMedian": "Median",
+  "salaryRange": "Range"
 }

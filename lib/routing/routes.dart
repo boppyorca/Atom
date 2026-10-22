@@ -6,6 +6,7 @@ abstract final class Routes {
   static const skills = '/profile/skills';
   static const discover = '/discover';
   static const salary = '/salary';
+  static const salaryEntry = '/salary/entry';
   static const settings = '/settings';
 
   static String signInOtpWithEmail(String email) =>

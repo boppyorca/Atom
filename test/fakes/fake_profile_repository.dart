@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:harness_app/data/repositories/profile_repository.dart';
 import 'package:harness_app/domain/models/city.dart';
 import 'package:harness_app/domain/models/profile.dart';
+import 'package:harness_app/domain/models/salary.dart';
 import 'package:harness_app/domain/models/skill.dart';
 import 'package:harness_app/ui/core/app_failure.dart';
 import 'package:harness_app/ui/core/result.dart';
@@ -25,6 +26,15 @@ class FakeProfileRepository implements ProfileRepository {
   Set<String> savedKeys = const {};
   Completer<void>? loadGate;
   List<Skill> skills = [];
+  SalaryAggregate aggregate = const SalaryAggregate.insufficient();
+  final List<SalaryRole> salaryRoles = const [
+    SalaryRole(
+      id: 1,
+      code: 'mobile_developer',
+      labelVi: 'Mobile developer',
+      labelEn: 'Mobile developer',
+    ),
+  ];
 
   @override
   Future<Result<Profile>> loadMyProfile() async {
@@ -87,5 +97,33 @@ class FakeProfileRepository implements ProfileRepository {
   Future<Result<void>> deleteSkill(String id) async {
     skills = skills.where((skill) => skill.id != id).toList();
     return const Ok(null);
+  }
+
+  @override
+  Future<Result<List<SalaryRole>>> loadSalaryRoles() async => Ok(salaryRoles);
+
+  @override
+  Future<Result<SalaryAggregate>> salaryAggregate({
+    required int roleId,
+    required int cityId,
+    required SeniorityLevel seniority,
+  }) async => Ok(aggregate);
+
+  @override
+  Future<Result<SalaryEntry>> addSalaryEntry({
+    required int roleId,
+    required int cityId,
+    required SeniorityLevel seniority,
+    required int grossMonthlyVnd,
+  }) async {
+    return Ok(
+      SalaryEntry(
+        id: 'pay-1',
+        roleId: roleId,
+        cityId: cityId,
+        seniority: seniority,
+        grossMonthlyVnd: grossMonthlyVnd,
+      ),
+    );
   }
 }

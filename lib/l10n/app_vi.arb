@@ -85,5 +85,17 @@
   "skillDuplicate": "Skill này đã có",
   "confidenceSelfClaimed": "Tự khai",
   "confidenceEvidenced": "Có bằng chứng",
-  "confidenceEndorsed": "Được xác nhận"
+  "confidenceEndorsed": "Được xác nhận",
+  "salaryRoleLabel": "Vai trò",
+  "salaryLookup": "Xem số liệu",
+  "salaryInsufficient": "Chưa đủ dữ liệu",
+  "salaryContributionRequired": "Góp 1 khoản lương để xem số liệu",
+  "salaryContribute": "Góp lương",
+  "salaryEntryTitle": "Khoản lương",
+  "salaryAmountLabel": "Lương gộp/tháng (VND)",
+  "salaryPrivate": "Không ai thấy khoản riêng của bạn.",
+  "salaryRequired": "Điền đủ 4 mục",
+  "salaryDuplicate": "Khoản này đã có",
+  "salaryMedian": "Trung vị",
+  "salaryRange": "Khoảng"
 }

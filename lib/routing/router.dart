@@ -14,7 +14,10 @@ import 'package:harness_app/ui/profile/profile_screen.dart';
 import 'package:harness_app/ui/profile/profile_view_model.dart';
 import 'package:harness_app/ui/profile/skills_screen.dart';
 import 'package:harness_app/ui/profile/skills_view_model.dart';
+import 'package:harness_app/ui/salary/salary_entry_screen.dart';
+import 'package:harness_app/ui/salary/salary_entry_view_model.dart';
 import 'package:harness_app/ui/salary/salary_screen.dart';
+import 'package:harness_app/ui/salary/salary_view_model.dart';
 import 'package:harness_app/ui/settings/settings_screen.dart';
 import 'package:harness_app/ui/settings/settings_view_model.dart';
 import 'package:harness_app/ui/shell/app_shell.dart';
@@ -99,7 +102,20 @@ GoRouter createRouter(
             routes: [
               GoRoute(
                 path: Routes.salary,
-                builder: (context, state) => const SalaryScreen(),
+                builder: (context, state) => ChangeNotifierProvider(
+                  create: (_) => SalaryViewModel(profileRepository)..load(),
+                  child: const SalaryScreen(),
+                ),
+                routes: [
+                  GoRoute(
+                    path: 'entry',
+                    builder: (context, state) => ChangeNotifierProvider(
+                      create: (_) =>
+                          SalaryEntryViewModel(profileRepository)..load(),
+                      child: const SalaryEntryScreen(),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
