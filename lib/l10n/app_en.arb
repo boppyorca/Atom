@@ -10,7 +10,9 @@
   "codeSentTo": "We sent a 6-digit code to {email}",
   "@codeSentTo": {
     "placeholders": {
-      "email": {"type": "String"}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "otpHint": "6-digit code",
@@ -26,9 +28,40 @@
   "tabSalary": "Salary",
   "tabSettings": "Settings",
   "profileTitle": "Profile",
-  "profileEmpty": "Your profile will show up here.",
   "discoverTitle": "Discover",
   "salaryTitle": "Salary",
   "settingsTitle": "Settings",
-  "comingSoon": "Coming soon"
+  "comingSoon": "Coming soon",
+  "loading": "Loading",
+  "editProfile": "Edit profile",
+  "save": "Save",
+  "displayNameLabel": "Display name",
+  "displayNameRequired": "Enter a display name (up to 60 characters)",
+  "bioLabel": "About",
+  "bioRemaining": "{count, plural, =1{1 character left} other{{count} characters left}}",
+  "@bioRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bioOver": "{count, plural, =1{1 character too many} other{{count} characters too many}}",
+  "@bioOver": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cityLabel": "City",
+  "cityNone": "Not set",
+  "contactLabel": "Contact",
+  "contactNone": "None",
+  "contactEmail": "Email",
+  "contactLinkedin": "LinkedIn",
+  "contactEmailLabel": "Contact email",
+  "contactLinkedinLabel": "LinkedIn link",
+  "contactInvalid": "Contact is not in a valid format",
+  "contactVisibleLabel": "Show contact on profile"
 }

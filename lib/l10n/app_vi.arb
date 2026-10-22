@@ -10,7 +10,9 @@
   "codeSentTo": "Đã gửi mã 6 số tới {email}",
   "@codeSentTo": {
     "placeholders": {
-      "email": {"type": "String"}
+      "email": {
+        "type": "String"
+      }
     }
   },
   "otpHint": "Mã 6 số",
@@ -26,9 +28,40 @@
   "tabSalary": "Lương",
   "tabSettings": "Cài đặt",
   "profileTitle": "Hồ sơ",
-  "profileEmpty": "Hồ sơ của bạn sẽ hiện ở đây.",
   "discoverTitle": "Khám phá",
   "salaryTitle": "Lương",
   "settingsTitle": "Cài đặt",
-  "comingSoon": "Sắp có"
+  "comingSoon": "Sắp có",
+  "loading": "Đang tải",
+  "editProfile": "Sửa hồ sơ",
+  "save": "Lưu",
+  "displayNameLabel": "Tên hiển thị",
+  "displayNameRequired": "Nhập tên hiển thị (tối đa 60 ký tự)",
+  "bioLabel": "Giới thiệu",
+  "bioRemaining": "{count, plural, other{còn {count} ký tự}}",
+  "@bioRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bioOver": "{count, plural, other{Quá {count} ký tự}}",
+  "@bioOver": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cityLabel": "Thành phố",
+  "cityNone": "Chưa chọn",
+  "contactLabel": "Liên hệ",
+  "contactNone": "Không",
+  "contactEmail": "Email",
+  "contactLinkedin": "LinkedIn",
+  "contactEmailLabel": "Email liên hệ",
+  "contactLinkedinLabel": "Link LinkedIn",
+  "contactInvalid": "Liên hệ sai định dạng",
+  "contactVisibleLabel": "Hiện liên hệ trên hồ sơ"
 }

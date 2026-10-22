@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:harness_app/config/env.dart';
 import 'package:harness_app/data/repositories/auth_repository.dart';
+import 'package:harness_app/data/repositories/profile_repository.dart';
 import 'package:harness_app/data/services/secure_session_storage.dart';
 import 'package:harness_app/data/services/supabase_service.dart';
 import 'package:harness_app/l10n/app_localizations.dart';
@@ -17,21 +18,26 @@ Future<void> main() async {
     publishableKey: Env.supabasePublishableKey,
     authOptions: FlutterAuthClientOptions(localStorage: SecureSessionStorage()),
   );
-  final authRepository = SupabaseAuthRepository(
-    SupabaseService(Supabase.instance.client),
+  final service = SupabaseService(Supabase.instance.client);
+  runApp(
+    AtomApp(
+      authRepository: SupabaseAuthRepository(service),
+      profileRepository: SupabaseProfileRepository(service),
+    ),
   );
-  runApp(AtomApp(authRepository: authRepository));
 }
 
 class AtomApp extends StatefulWidget {
   const AtomApp({
     super.key,
     required this.authRepository,
+    required this.profileRepository,
     this.locale,
     this.router,
   });
 
   final AuthRepository authRepository;
+  final ProfileRepository profileRepository;
   final Locale? locale;
   final GoRouter? router;
 
@@ -41,7 +47,8 @@ class AtomApp extends StatefulWidget {
 
 class _AtomAppState extends State<AtomApp> {
   late final GoRouter _router =
-      widget.router ?? createRouter(widget.authRepository);
+      widget.router ??
+      createRouter(widget.authRepository, widget.profileRepository);
 
   @override
   Widget build(BuildContext context) {

@@ -37,7 +37,8 @@ void main() {
 
   test('bio counts remaining characters and blocks saving over 300', () async {
     final repo = FakeProfileRepository();
-    final vm = await loaded(repo)..bio = 'a' * 55;
+    final vm = await loaded(repo)
+      ..bio = 'a' * 55;
     expect(vm.bioRemaining, 245);
 
     vm.bio = 'a' * 300;
@@ -52,13 +53,15 @@ void main() {
   });
 
   test('bio length counts characters like the database does', () async {
-    final vm = await loaded(FakeProfileRepository())..bio = 'Việt 🙂';
+    final vm = await loaded(FakeProfileRepository())
+      ..bio = 'Việt 🙂';
     expect(vm.bioRemaining, 300 - 6);
   });
 
   test('empty name blocks saving', () async {
     final repo = FakeProfileRepository();
-    final vm = await loaded(repo)..displayName = '   ';
+    final vm = await loaded(repo)
+      ..displayName = '   ';
 
     expect(await vm.save(), isFalse);
     expect(vm.nameError, isTrue);
@@ -84,7 +87,8 @@ void main() {
         contactType: ContactLinkType.email,
         contactValue: 'minh@example.com',
       );
-    final vm = await loaded(repo)..contactType = null;
+    final vm = await loaded(repo)
+      ..contactType = null;
 
     expect(await vm.save(), isTrue);
     expect(repo.profile.contactType, isNull);
@@ -94,7 +98,8 @@ void main() {
   test('offline save keeps the typed data and shows the failure', () async {
     final repo = FakeProfileRepository()
       ..saveError = const Error(NetworkFailure());
-    final vm = await loaded(repo)..bio = 'Typed while offline';
+    final vm = await loaded(repo)
+      ..bio = 'Typed while offline';
 
     expect(await vm.save(), isFalse);
     expect(vm.saveFailure, isA<NetworkFailure>());

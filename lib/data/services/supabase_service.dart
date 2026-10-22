@@ -37,6 +37,9 @@ class SupabaseService {
   }
 
   Future<List<Map<String, dynamic>>> selectCities() {
-    return client.from('cities').select('id, code, label_vi, label_en').order('id');
+    return client
+        .from('cities')
+        .select('id, code, label_vi, label_en')
+        .order('id');
   }
 }
