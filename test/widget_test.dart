@@ -4,14 +4,17 @@ import 'package:harness_app/main.dart';
 import 'package:harness_app/routing/router.dart';
 
 import 'fakes/fake_auth_repository.dart';
+import 'fakes/fake_profile_repository.dart';
 
 void main() {
   testWidgets('app builds the sign-in screen when unsigned', (tester) async {
+    final profiles = FakeProfileRepository();
     final auth = FakeAuthRepository();
     await tester.pumpWidget(
       AtomApp(
         authRepository: auth,
-        router: createRouter(auth),
+        profileRepository: profiles,
+        router: createRouter(auth, profiles),
         locale: const Locale('vi'),
       ),
     );

@@ -36,6 +36,7 @@ Docs are in Vietnamese; code identifiers are in English. Reply to the owner in V
 3. Only use local Supabase. Never run `supabase link` or touch a remote project. Schema changes go through `supabase/migrations`.
 4. Run `make check` before reporting a task as done, and report the actual output.
 5. Stop and ask the human before: adding a new package, changing auth/payments/RLS, or editing migrations that already exist.
+6. If the same step fails twice in a row, stop and ask, whatever the cause. Don't work around it.
 
 ## Agent skills
 

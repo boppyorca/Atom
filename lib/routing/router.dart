@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:harness_app/data/repositories/auth_repository.dart';
+import 'package:harness_app/data/repositories/profile_repository.dart';
 import 'package:harness_app/routing/routes.dart';
 import 'package:harness_app/ui/auth/otp_screen.dart';
 import 'package:harness_app/ui/auth/otp_view_model.dart';
 import 'package:harness_app/ui/auth/sign_in_screen.dart';
 import 'package:harness_app/ui/auth/sign_in_view_model.dart';
 import 'package:harness_app/ui/discover/discover_screen.dart';
+import 'package:harness_app/ui/profile/profile_edit_screen.dart';
+import 'package:harness_app/ui/profile/profile_edit_view_model.dart';
 import 'package:harness_app/ui/profile/profile_screen.dart';
+import 'package:harness_app/ui/profile/profile_view_model.dart';
 import 'package:harness_app/ui/salary/salary_screen.dart';
 import 'package:harness_app/ui/settings/settings_screen.dart';
 import 'package:harness_app/ui/settings/settings_view_model.dart';
 import 'package:harness_app/ui/shell/app_shell.dart';
 import 'package:provider/provider.dart';
 
-GoRouter createRouter(AuthRepository authRepository) {
+GoRouter createRouter(
+  AuthRepository authRepository,
+  ProfileRepository profileRepository,
+) {
   return GoRouter(
     initialLocation: Routes.profile,
     refreshListenable: authRepository,
@@ -54,7 +61,20 @@ GoRouter createRouter(AuthRepository authRepository) {
             routes: [
               GoRoute(
                 path: Routes.profile,
-                builder: (context, state) => const ProfileScreen(),
+                builder: (context, state) => ChangeNotifierProvider(
+                  create: (_) => ProfileViewModel(profileRepository)..load(),
+                  child: const ProfileScreen(),
+                ),
+                routes: [
+                  GoRoute(
+                    path: 'edit',
+                    builder: (context, state) => ChangeNotifierProvider(
+                      create: (_) =>
+                          ProfileEditViewModel(profileRepository)..load(),
+                      child: const ProfileEditScreen(),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
