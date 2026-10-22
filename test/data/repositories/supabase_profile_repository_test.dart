@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart';
 import 'package:harness_app/data/repositories/profile_repository.dart';
 import 'package:harness_app/domain/models/profile.dart';
 import 'package:harness_app/data/services/supabase_service.dart';
@@ -14,6 +15,7 @@ void main() {
     'lost connection': const SocketException('offline'),
     'secure connection failed': const HandshakeException('wifi login page'),
     'no answer in time': TimeoutException('slow'),
+    'connection dropped mid-response': ClientException('connection closed'),
   };
 
   for (final entry in cases.entries) {

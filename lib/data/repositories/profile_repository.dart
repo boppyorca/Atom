@@ -7,6 +7,7 @@ import 'package:harness_app/domain/models/city.dart';
 import 'package:harness_app/domain/models/profile.dart';
 import 'package:harness_app/ui/core/app_failure.dart';
 import 'package:harness_app/ui/core/result.dart';
+import 'package:http/http.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class ProfileRepository {
@@ -53,6 +54,8 @@ class SupabaseProfileRepository implements ProfileRepository {
     } on SocketException {
       return Error(const NetworkFailure());
     } on HandshakeException {
+      return Error(const NetworkFailure());
+    } on ClientException {
       return Error(const NetworkFailure());
     } on TimeoutException {
       return Error(const NetworkFailure());
