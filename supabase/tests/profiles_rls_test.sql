@@ -1,5 +1,5 @@
 begin;
-select plan(10);
+select plan(15);
 
 insert into auth.users (
   instance_id,
@@ -67,6 +67,25 @@ select throws_ok(
   null,
   'anon cannot read profiles'
 );
+select throws_ok(
+  $$insert into public.profiles (id, display_name)
+    values ('11111111-1111-1111-1111-111111111111', 'anon')$$,
+  '42501',
+  null,
+  'anon cannot create profiles'
+);
+select throws_ok(
+  $$update public.profiles set display_name = 'anon'$$,
+  '42501',
+  null,
+  'anon cannot update profiles'
+);
+select throws_ok(
+  $$delete from public.profiles$$,
+  '42501',
+  null,
+  'anon cannot delete profiles'
+);
 
 set local role authenticated;
 select set_config('request.jwt.claim.sub', '11111111-1111-1111-1111-111111111111', true);
@@ -109,10 +128,24 @@ select set_config(
   true
 );
 
+select results_eq(
+  $$select id::text from public.profiles$$,
+  array['22222222-2222-2222-2222-222222222222'],
+  'another user sees only their own profile'
+);
+
 select is_empty(
   $$select * from public.profiles
     where id = '11111111-1111-1111-1111-111111111111'$$,
   'another user cannot read the owner profile'
+);
+
+select throws_ok(
+  $$insert into public.profiles (id, display_name)
+    values (gen_random_uuid(), 'Fake')$$,
+  '42501',
+  null,
+  'another user cannot create a profile for someone else'
 );
 
 select is_empty(
