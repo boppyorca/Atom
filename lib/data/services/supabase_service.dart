@@ -25,4 +25,18 @@ class SupabaseService {
   }
 
   Future<void> signOut() => client.auth.signOut();
+
+  String get _userId => client.auth.currentUser!.id;
+
+  Future<Map<String, dynamic>> selectOwnProfile(String columns) {
+    return client.from('profiles').select(columns).eq('id', _userId).single();
+  }
+
+  Future<void> updateOwnProfile(Map<String, dynamic> values) {
+    return client.from('profiles').update(values).eq('id', _userId);
+  }
+
+  Future<List<Map<String, dynamic>>> selectCities() {
+    return client.from('cities').select('id, code, label_vi, label_en').order('id');
+  }
 }

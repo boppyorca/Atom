@@ -1,0 +1,66 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:harness_app/data/services/supabase_service.dart';
+import 'package:harness_app/domain/models/city.dart';
+import 'package:harness_app/domain/models/profile.dart';
+import 'package:harness_app/ui/core/app_failure.dart';
+import 'package:harness_app/ui/core/result.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+abstract class ProfileRepository {
+  Future<Result<Profile>> loadMyProfile();
+
+  Future<Result<List<City>>> loadCities();
+
+  Future<Result<void>> saveMyProfile(Profile profile);
+}
+
+class SupabaseProfileRepository implements ProfileRepository {
+  SupabaseProfileRepository(this._service);
+
+  static const _columns =
+      'id, display_name, bio, city_id, contact_type, contact_value, '
+      'contact_visible, visibility';
+
+  final SupabaseService _service;
+
+  @override
+  Future<Result<Profile>> loadMyProfile() {
+    return _guard(
+      () async => Profile.fromJson(await _service.selectOwnProfile(_columns)),
+    );
+  }
+
+  @override
+  Future<Result<List<City>>> loadCities() {
+    return _guard(() async {
+      final rows = await _service.selectCities();
+      return rows.map(City.fromJson).toList();
+    });
+  }
+
+  @override
+  Future<Result<void>> saveMyProfile(Profile profile) {
+    return _guard(
+      () => _service.updateOwnProfile(profile.toJson()..remove('id')),
+    );
+  }
+
+  Future<Result<T>> _guard<T>(Future<T> Function() action) async {
+    try {
+      return Ok(await action());
+    } on SocketException {
+      return Error(const NetworkFailure());
+    } on TimeoutException {
+      return Error(const NetworkFailure());
+    } on PostgrestException catch (exception) {
+      if (exception.code == '23514') {
+        return Error(const ValidationFailure('check_violation'));
+      }
+      return Error(const ServerFailure());
+    } catch (_) {
+      return Error(const ServerFailure());
+    }
+  }
+}
