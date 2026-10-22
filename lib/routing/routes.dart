@@ -3,6 +3,7 @@ abstract final class Routes {
   static const signInOtp = '/sign-in/otp';
   static const profile = '/profile';
   static const profileEdit = '/profile/edit';
+  static const skills = '/profile/skills';
   static const discover = '/discover';
   static const salary = '/salary';
   static const settings = '/settings';

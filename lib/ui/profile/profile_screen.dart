@@ -91,6 +91,13 @@ class ProfileScreen extends StatelessWidget {
               Text(l10n.contactLabel, style: textTheme.titleMedium),
               Text(profile.contactValue!, style: textTheme.bodyLarge),
             ],
+            const SizedBox(height: AppSpacing.space4),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.skillsTitle),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(Routes.skills),
+            ),
           ],
         ),
         _ => const SizedBox.shrink(),

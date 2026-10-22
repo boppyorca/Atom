@@ -76,5 +76,14 @@
   "contactEmailLabel": "Email liên hệ",
   "contactLinkedinLabel": "Link LinkedIn",
   "contactInvalid": "Liên hệ sai định dạng",
-  "contactVisibleLabel": "Hiện liên hệ trên hồ sơ"
+  "contactVisibleLabel": "Hiện liên hệ trên hồ sơ",
+  "skillsTitle": "Skill",
+  "addSkill": "Thêm skill",
+  "skillNameLabel": "Tên skill",
+  "skillsEmpty": "Chưa có skill",
+  "deleteSkill": "Xóa skill",
+  "skillDuplicate": "Skill này đã có",
+  "confidenceSelfClaimed": "Tự khai",
+  "confidenceEvidenced": "Có bằng chứng",
+  "confidenceEndorsed": "Được xác nhận"
 }

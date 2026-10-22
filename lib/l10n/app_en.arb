@@ -76,5 +76,14 @@
   "contactEmailLabel": "Contact email",
   "contactLinkedinLabel": "LinkedIn link",
   "contactInvalid": "Contact is not in a valid format",
-  "contactVisibleLabel": "Show contact on profile"
+  "contactVisibleLabel": "Show contact on profile",
+  "skillsTitle": "Skills",
+  "addSkill": "Add skill",
+  "skillNameLabel": "Skill name",
+  "skillsEmpty": "No skills yet",
+  "deleteSkill": "Delete skill",
+  "skillDuplicate": "This skill is already on your profile",
+  "confidenceSelfClaimed": "Self-claimed",
+  "confidenceEvidenced": "Has evidence",
+  "confidenceEndorsed": "Endorsed"
 }
