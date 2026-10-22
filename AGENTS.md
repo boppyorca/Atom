@@ -3,6 +3,7 @@
 Flutter mobile app (iOS, Android) with a local Supabase backend.
 Product requirements: TBD, see docs/SPEC.md once it exists.
 Requirements: see docs/SPEC.md. Read docs/FEATURES.md before feature work.
+Design: see docs/design/TECH_DESIGN.md; read the relevant design doc before feature work.
 
 ## Commands
 
