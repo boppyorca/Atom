@@ -10,7 +10,8 @@ description: >
 # Next ticket
 
 One ticket per run, end to end. Reply to the owner in plain Vietnamese.
-Hard stop: if any step fails twice in a row, stop and ask the owner; do not work around it.
+Hard stop (AGENTS.md rule 6): if the same step fails twice in a row, stop and ask the owner,
+even when the second failure has a different cause. A test going red on purpose in step 3 is not a failure.
 
 ## 1. Pick and claim
 

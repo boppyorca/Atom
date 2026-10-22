@@ -18,12 +18,12 @@ values
 alter table public.cities enable row level security;
 
 revoke all on table public.cities from public, anon, authenticated;
-grant select on table public.cities to anon, authenticated;
+grant select on table public.cities to authenticated;
 
 create policy cities_select_all
   on public.cities
   for select
-  to anon, authenticated
+  to authenticated
   using (true);
 
 create type public.contact_type as enum ('email', 'linkedin');

@@ -8,10 +8,11 @@ select results_eq(
 );
 
 set local role anon;
-select results_eq(
-  $$select count(*)::int from public.cities$$,
-  array[5],
-  'anon reads cities'
+select throws_ok(
+  $$select count(*) from public.cities$$,
+  '42501',
+  null,
+  'anon cannot read cities'
 );
 select throws_ok(
   $$insert into public.cities (id, code, label_vi, label_en) values (99, 'x', 'x', 'x')$$,
