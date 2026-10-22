@@ -12,6 +12,8 @@ import 'package:harness_app/ui/profile/profile_edit_screen.dart';
 import 'package:harness_app/ui/profile/profile_edit_view_model.dart';
 import 'package:harness_app/ui/profile/profile_screen.dart';
 import 'package:harness_app/ui/profile/profile_view_model.dart';
+import 'package:harness_app/ui/profile/skills_screen.dart';
+import 'package:harness_app/ui/profile/skills_view_model.dart';
 import 'package:harness_app/ui/salary/salary_screen.dart';
 import 'package:harness_app/ui/settings/settings_screen.dart';
 import 'package:harness_app/ui/settings/settings_view_model.dart';
@@ -72,6 +74,13 @@ GoRouter createRouter(
                       create: (_) =>
                           ProfileEditViewModel(profileRepository)..load(),
                       child: const ProfileEditScreen(),
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'skills',
+                    builder: (context, state) => ChangeNotifierProvider(
+                      create: (_) => SkillsViewModel(profileRepository)..load(),
+                      child: const SkillsScreen(),
                     ),
                   ),
                 ],

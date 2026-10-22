@@ -5,6 +5,7 @@ import 'package:harness_app/config/request_timeout.dart';
 import 'package:harness_app/data/services/supabase_service.dart';
 import 'package:harness_app/domain/models/city.dart';
 import 'package:harness_app/domain/models/profile.dart';
+import 'package:harness_app/domain/models/skill.dart';
 import 'package:harness_app/ui/core/app_failure.dart';
 import 'package:harness_app/ui/core/result.dart';
 import 'package:http/http.dart';
@@ -17,6 +18,12 @@ abstract class ProfileRepository {
 
   /// `values` holds only the columns the edit screen changes.
   Future<Result<void>> saveMyProfile(Map<String, dynamic> values);
+
+  Future<Result<List<Skill>>> loadMySkills();
+
+  Future<Result<Skill>> addSkill(String name);
+
+  Future<Result<void>> deleteSkill(String id);
 }
 
 class SupabaseProfileRepository implements ProfileRepository {
@@ -48,6 +55,26 @@ class SupabaseProfileRepository implements ProfileRepository {
     return _guard(() => _service.updateOwnProfile(values));
   }
 
+  @override
+  Future<Result<List<Skill>>> loadMySkills() {
+    return _guard(() async {
+      final rows = await _service.selectOwnSkills();
+      return rows.map(Skill.fromJson).toList();
+    });
+  }
+
+  @override
+  Future<Result<Skill>> addSkill(String name) {
+    return _guard(
+      () async => Skill.fromJson(await _service.insertOwnSkill(name)),
+    );
+  }
+
+  @override
+  Future<Result<void>> deleteSkill(String id) {
+    return _guard(() => _service.deleteOwnSkill(id));
+  }
+
   Future<Result<T>> _guard<T>(Future<T> Function() action) async {
     try {
       return Ok(await action().timeout(requestTimeout));
@@ -62,6 +89,9 @@ class SupabaseProfileRepository implements ProfileRepository {
     } on PostgrestException catch (exception) {
       if (exception.code == '23514') {
         return Error(const ValidationFailure('check_violation'));
+      }
+      if (exception.code == '23505') {
+        return Error(const ValidationFailure('duplicate_skill'));
       }
       return Error(const ServerFailure());
     } catch (_) {

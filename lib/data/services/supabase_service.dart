@@ -42,4 +42,28 @@ class SupabaseService {
         .select('id, code, label_vi, label_en')
         .order('id');
   }
+
+  Future<List<Map<String, dynamic>>> selectOwnSkills() {
+    return client
+        .from('skills')
+        .select('id, name, confidence')
+        .eq('profile_id', _userId)
+        .order('created_at');
+  }
+
+  Future<Map<String, dynamic>> insertOwnSkill(String name) {
+    return client
+        .from('skills')
+        .insert({'profile_id': _userId, 'name': name})
+        .select('id, name, confidence')
+        .single();
+  }
+
+  Future<void> deleteOwnSkill(String id) {
+    return client
+        .from('skills')
+        .delete()
+        .eq('id', id)
+        .eq('profile_id', _userId);
+  }
 }
