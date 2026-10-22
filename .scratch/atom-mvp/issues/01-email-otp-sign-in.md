@@ -17,9 +17,10 @@ Thiết kế: F-001, S-01, S-02, S-16 (đăng xuất); ADR-0001…0005; TECH_DES
 - [x] Test chung: mọi bảng `public` bật RLS (pgTAP)
 - [x] Mọi chuỗi có trong cả `app_vi.arb` và `app_en.arb`; S-01, S-02 đạt guideline tiếp cận
 - [x] `make check` và `make check-db` xanh
-- [ ] Email đăng nhập thật sự chứa mã 6 số (kiểm trên Supabase local qua Mailpit)
+- [x] Email đăng nhập thật sự chứa mã 6 số (kiểm trên Supabase local qua Mailpit)
 - [ ] Chạy thử trên Simulator/máy ảo: nhập email → nhập mã → vào tab Hồ sơ → đăng xuất về S-01
 
 ## Comments
 
 - 2026-10-22: Rà soát sau khi báo xong. Thử luồng thật qua API local: mẫu email mặc định chỉ gửi link (`type=magiclink`), **không có mã 6 số**, nên S-02 không dùng được. Cần mẫu email `magic_link` có `{{ .Token }}` trong `supabase/config.toml` (đổi cấu hình đăng nhập → chờ chủ dự án đồng ý). Máy chưa có Xcode/Android SDK nên chưa chạy Simulator. Hàm trigger `handle_new_user` còn quyền EXECUTE cho `anon`/`authenticated` → đã gỡ bằng migration mới + test. Nút gửi lại mã chưa chờ 60 giây → ticket 18.
+- 2026-10-22: Chủ dự án đồng ý đổi mẫu email. Thêm `supabase/templates/otp.html` (`{{ .Token }}`) cho `magic_link` và `confirmation`. Kiểm qua API local + Mailpit: email có mã 6 số, không có link; đúng mã → 200, sai mã → 403, dùng lại mã → 403; hồ sơ tự tạo, `private`. Khi tạo dự án Supabase thật phải chép cùng mẫu này. Còn chờ: Simulator (chủ dự án đang cài Xcode), repo GitHub để mở PR.
