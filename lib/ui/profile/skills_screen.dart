@@ -78,7 +78,8 @@ class _SkillsScreenState extends State<SkillsScreen> {
 }
 
 String? _fieldError(AppLocalizations l10n, AppFailure? failure) {
-  if (failure is ValidationFailure && failure.code == 'duplicate_skill') {
+  if (failure is ValidationFailure &&
+      (failure.code == 'duplicate_skill' || failure.code == 'duplicate')) {
     return l10n.skillDuplicate;
   }
   if (failure is NetworkFailure) return l10n.noConnection;

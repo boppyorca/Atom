@@ -5,6 +5,7 @@ import 'package:harness_app/config/request_timeout.dart';
 import 'package:harness_app/data/services/supabase_service.dart';
 import 'package:harness_app/domain/models/city.dart';
 import 'package:harness_app/domain/models/profile.dart';
+import 'package:harness_app/domain/models/salary.dart';
 import 'package:harness_app/domain/models/skill.dart';
 import 'package:harness_app/ui/core/app_failure.dart';
 import 'package:harness_app/ui/core/result.dart';
@@ -24,6 +25,21 @@ abstract class ProfileRepository {
   Future<Result<Skill>> addSkill(String name);
 
   Future<Result<void>> deleteSkill(String id);
+
+  Future<Result<List<SalaryRole>>> loadSalaryRoles();
+
+  Future<Result<SalaryAggregate>> salaryAggregate({
+    required int roleId,
+    required int cityId,
+    required SeniorityLevel seniority,
+  });
+
+  Future<Result<SalaryEntry>> addSalaryEntry({
+    required int roleId,
+    required int cityId,
+    required SeniorityLevel seniority,
+    required int grossMonthlyVnd,
+  });
 }
 
 class SupabaseProfileRepository implements ProfileRepository {
@@ -75,6 +91,48 @@ class SupabaseProfileRepository implements ProfileRepository {
     return _guard(() => _service.deleteOwnSkill(id));
   }
 
+  @override
+  Future<Result<List<SalaryRole>>> loadSalaryRoles() {
+    return _guard(() async {
+      final rows = await _service.selectSalaryRoles();
+      return rows.map(SalaryRole.fromJson).toList();
+    });
+  }
+
+  @override
+  Future<Result<SalaryAggregate>> salaryAggregate({
+    required int roleId,
+    required int cityId,
+    required SeniorityLevel seniority,
+  }) {
+    return _guard(() async {
+      final row = await _service.salaryAggregate(
+        roleId: roleId,
+        cityId: cityId,
+        seniority: seniority.name,
+      );
+      return SalaryAggregate.fromJson(row);
+    });
+  }
+
+  @override
+  Future<Result<SalaryEntry>> addSalaryEntry({
+    required int roleId,
+    required int cityId,
+    required SeniorityLevel seniority,
+    required int grossMonthlyVnd,
+  }) {
+    return _guard(() async {
+      final row = await _service.insertSalaryEntry(
+        roleId: roleId,
+        cityId: cityId,
+        seniority: seniority.name,
+        grossMonthlyVnd: grossMonthlyVnd,
+      );
+      return SalaryEntry.fromJson(row);
+    });
+  }
+
   Future<Result<T>> _guard<T>(Future<T> Function() action) async {
     try {
       return Ok(await action().timeout(requestTimeout));
@@ -91,7 +149,10 @@ class SupabaseProfileRepository implements ProfileRepository {
         return Error(const ValidationFailure('check_violation'));
       }
       if (exception.code == '23505') {
-        return Error(const ValidationFailure('duplicate_skill'));
+        return Error(const ValidationFailure('duplicate'));
+      }
+      if (exception.message.contains('CONTRIBUTION_REQUIRED')) {
+        return Error(const ValidationFailure('contribution_required'));
       }
       return Error(const ServerFailure());
     } catch (_) {

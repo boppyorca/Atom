@@ -66,4 +66,46 @@ class SupabaseService {
         .eq('id', id)
         .eq('profile_id', _userId);
   }
+
+  Future<List<Map<String, dynamic>>> selectSalaryRoles() {
+    return client
+        .from('salary_roles')
+        .select('id, code, label_vi, label_en')
+        .order('id');
+  }
+
+  Future<Map<String, dynamic>> salaryAggregate({
+    required int roleId,
+    required int cityId,
+    required String seniority,
+  }) async {
+    final result = await client.rpc<Map<String, dynamic>>(
+      'get_salary_aggregate',
+      params: {
+        'p_role_id': roleId,
+        'p_city_id': cityId,
+        'p_seniority': seniority,
+      },
+    );
+    return Map<String, dynamic>.from(result as Map);
+  }
+
+  Future<Map<String, dynamic>> insertSalaryEntry({
+    required int roleId,
+    required int cityId,
+    required String seniority,
+    required int grossMonthlyVnd,
+  }) {
+    return client
+        .from('salary_entries')
+        .insert({
+          'profile_id': _userId,
+          'role_id': roleId,
+          'city_id': cityId,
+          'seniority': seniority,
+          'gross_monthly_vnd': grossMonthlyVnd,
+        })
+        .select('id, role_id, city_id, seniority, gross_monthly_vnd')
+        .single();
+  }
 }
