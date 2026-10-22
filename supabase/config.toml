@@ -244,6 +244,15 @@ otp_expiry = 3600
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
 
+# The app signs in with a 6-digit code, never a link; new emails get "confirmation", known ones "magic_link".
+[auth.email.template.magic_link]
+subject = "Mã đăng nhập Atom / Your Atom sign-in code"
+content_path = "./supabase/templates/otp.html"
+
+[auth.email.template.confirmation]
+subject = "Mã đăng nhập Atom / Your Atom sign-in code"
+content_path = "./supabase/templates/otp.html"
+
 # Uncomment to customize email template
 # [auth.email.template.invite]
 # subject = "You have been invited"

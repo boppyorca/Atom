@@ -47,6 +47,11 @@ app.*.map.json
 # Widget Preview related
 .widget_preview/
 
+# gen-l10n. Regenerated on pub get.
+l10n_untranslated.json
+lib/l10n/*.dart
+
+
 # Secrets and signing
 .env*
 !.env.example

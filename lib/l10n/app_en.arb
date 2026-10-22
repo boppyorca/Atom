@@ -1,0 +1,34 @@
+{
+  "@@locale": "en",
+  "appTitle": "Atom",
+  "appTagline": "Prove skills with real evidence",
+  "emailLabel": "Email",
+  "emailHint": "you@example.com",
+  "sendLoginCode": "Send login code",
+  "invalidEmail": "Enter a valid email",
+  "enterCodeTitle": "Enter code",
+  "codeSentTo": "We sent a 6-digit code to {email}",
+  "@codeSentTo": {
+    "placeholders": {
+      "email": {"type": "String"}
+    }
+  },
+  "otpHint": "6-digit code",
+  "confirm": "Confirm",
+  "otpInvalid": "Wrong or expired code",
+  "resendCode": "Resend code",
+  "noConnection": "No connection",
+  "retry": "Try again",
+  "genericError": "Something went wrong, try again",
+  "signOut": "Sign out",
+  "tabProfile": "Profile",
+  "tabDiscover": "Discover",
+  "tabSalary": "Salary",
+  "tabSettings": "Settings",
+  "profileTitle": "Profile",
+  "profileEmpty": "Your profile will show up here.",
+  "discoverTitle": "Discover",
+  "salaryTitle": "Salary",
+  "settingsTitle": "Settings",
+  "comingSoon": "Coming soon"
+}
