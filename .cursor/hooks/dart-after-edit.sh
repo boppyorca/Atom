@@ -1,0 +1,18 @@
+#!/bin/bash
+# postToolUse (Write): format the edited .dart file, feed analyzer issues back to the agent.
+file=$(jq -r '.tool_input.file_path // .tool_input.path // .tool_input.target_file // .file_path // empty')
+
+if [[ "$file" != *.dart || ! -f "$file" ]]; then
+  echo '{}'
+  exit 0
+fi
+
+dart format "$file" >/dev/null 2>&1
+issues=$(dart analyze "$file" 2>&1)
+
+if [[ $? -eq 0 ]]; then
+  echo '{}'
+else
+  jq -nc --arg c "dart analyze $file:
+$issues" '{additional_context: $c}'
+fi
