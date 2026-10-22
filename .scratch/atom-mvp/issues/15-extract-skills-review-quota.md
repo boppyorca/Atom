@@ -18,3 +18,7 @@ Thiết kế: F-019 (tiếp cận), F-007, F-018, S-03, S-09; DATA_MODEL `ai_job
 - [ ] App hiện `timed_out` khi quá `deadline_at`; dấu báo kết quả mới theo `seen_at` (test ViewModel)
 - [ ] S-09 đạt guideline tiếp cận; chuỗi đủ vi/en
 - [ ] `make check`, `make check-db`, `make check-functions` xanh
+
+## Comments
+
+- 2026-10-23: Chủ dự án chốt hướng model riêng. Bản app vẫn dùng bộ từ khóa (ADR-0010). Model học sau, không chặn các ticket trước 15. Model đầu chỉ nhận skill trong một repo GitHub. Dữ liệu dạy chỉ là các lần chấp nhận hoặc bỏ gợi ý, và chỉ khi người dùng đã đồng ý cho phép học. Chưa gắn model vào app.
