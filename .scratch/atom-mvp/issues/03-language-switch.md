@@ -6,7 +6,7 @@
 
 **Status:** ready-for-agent
 
-Thiết kế: F-017, S-16; ADR-0004 (`shared_preferences`); NFR-04.
+Thiết kế: F-019 (tiếp cận), F-017, S-16; ADR-0004 (`shared_preferences`); NFR-04.
 
 - [ ] Đổi ngôn ngữ cập nhật mọi chuỗi đang hiện, không cần khởi động lại
 - [ ] Lựa chọn được nhớ sau khi mở lại app (test với fake preferences)

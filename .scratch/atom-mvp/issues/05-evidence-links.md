@@ -6,7 +6,7 @@
 
 **Status:** ready-for-agent
 
-Thiết kế: F-005, F-008, F-009, S-05, S-07; DATA_MODEL `evidence`, `skill_evidence`; ALG-01.
+Thiết kế: F-019 (tiếp cận), F-005, F-008, F-009, S-05, S-07; DATA_MODEL `evidence`, `skill_evidence`; ALG-01.
 
 - [ ] Thêm/xóa link loại `article`/`product`; URL sai bị chặn ở app và CSDL
 - [ ] Link thứ 11 bị từ chối (pgTAP + thông báo trên app)

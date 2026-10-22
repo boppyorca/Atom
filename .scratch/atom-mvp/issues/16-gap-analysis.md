@@ -6,7 +6,7 @@
 
 **Status:** ready-for-agent
 
-Thiết kế: F-014, F-018, S-10; API_CONTRACT `analyze-gap`, `get_ai_quota`; ALG-05, ALG-09.
+Thiết kế: F-019 (tiếp cận), F-014, F-018, S-10; API_CONTRACT `analyze-gap`, `get_ai_quota`; ALG-05, ALG-09.
 
 - [ ] `analyze-gap` đạt 5 test mẫu ALG-09, gồm `no_known_skills` (`deno test`)
 - [ ] Chỉ chủ đọc được kết quả job (pgTAP)

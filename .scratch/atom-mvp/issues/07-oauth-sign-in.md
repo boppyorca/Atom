@@ -8,7 +8,7 @@
 
 **Status:** ready-for-agent
 
-Thiết kế: F-001, S-01; ADR-0005 (PKCE, deep link); TECH_DESIGN § 5.1.
+Thiết kế: F-019 (tiếp cận), F-001, S-01; ADR-0005 (PKCE, deep link); TECH_DESIGN § 5.1.
 
 - [ ] Nút Apple chỉ hiện trên iOS (widget test theo nền tảng)
 - [ ] Hủy giữa chừng quay về S-01 không lỗi (test ViewModel)

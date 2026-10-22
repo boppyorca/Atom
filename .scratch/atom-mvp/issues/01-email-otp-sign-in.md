@@ -8,7 +8,7 @@
 
 **Status:** resolved
 
-Thiết kế: F-001, S-01, S-02, S-16 (đăng xuất); ADR-0001…0005; TECH_DESIGN § 2–4; DATA_MODEL `profiles`.
+Thiết kế: F-019 (tiếp cận), F-001, S-01, S-02, S-16 (đăng xuất); ADR-0001…0005; TECH_DESIGN § 2–4; DATA_MODEL `profiles`.
 
 - [x] Chưa đăng nhập → luôn về S-01; đã đăng nhập → vào tab Hồ sơ (test `redirect`)
 - [x] Mã OTP sai/hết hạn hiện lỗi rõ ràng, không khóa giao diện (test ViewModel)

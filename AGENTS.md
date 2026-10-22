@@ -17,6 +17,8 @@ Docs are in Vietnamese; code identifiers are in English. Reply to the owner in V
 - `make check` — pub get, format check, analyze, unit/widget tests. CI runs it on every PR.
 - `make check-db` — `supabase db reset` + `supabase test db` (needs Docker running).
 - `make check-all` — `check` then `check-db`.
+- `make doctor` — tool versions; `make docs-check` — SPEC/ticket/ADR/link consistency; `make next-ticket` — unblocked tickets.
+- Feature loop: the `next-ticket` skill (`.cursor/skills/next-ticket/`) runs one ticket end to end.
 
 ## Layout
 

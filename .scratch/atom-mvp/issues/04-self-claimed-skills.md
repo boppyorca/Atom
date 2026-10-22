@@ -6,7 +6,7 @@
 
 **Status:** ready-for-agent
 
-Thiết kế: F-008, F-009 (phần `selfClaimed`), S-03, S-05; DATA_MODEL `skills`; ALG-01.
+Thiết kế: F-019 (tiếp cận), F-008, F-009 (phần `selfClaimed`), S-03, S-05; DATA_MODEL `skills`; ALG-01.
 
 - [ ] Thêm, xóa skill; trùng tên trong cùng hồ sơ bị chặn
 - [ ] Skill mới có `confidence = selfClaimed`; người dùng không ghi được `confidence` (pgTAP)

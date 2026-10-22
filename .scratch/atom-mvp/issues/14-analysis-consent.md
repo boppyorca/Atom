@@ -6,7 +6,7 @@
 
 **Status:** ready-for-agent
 
-Thiết kế: F-006, S-08, S-16; DATA_MODEL `ai_consents`; ADR-0010 (chữ trên giao diện: "phân tích tự động").
+Thiết kế: F-019 (tiếp cận), F-006, S-08, S-16; DATA_MODEL `ai_consents`; ADR-0010 (chữ trên giao diện: "phân tích tự động").
 
 - [ ] RLS `ai_consents`: chỉ chủ đọc/ghi (pgTAP)
 - [ ] Từ chối → nút phân tích dẫn tới S-08, tự khai skill vẫn dùng được (test ViewModel)
