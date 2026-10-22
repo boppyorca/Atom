@@ -4,7 +4,7 @@
 
 **Blocked by:** 01
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Thiết kế: F-019 (tiếp cận), F-003, S-03, S-04; DATA_MODEL `profiles`, `cities`; ADR-0008. Ticket dùng để đo ponytail (`.scratch/ponytail-trial.md`).
 
