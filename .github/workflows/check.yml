@@ -34,7 +34,8 @@ jobs:
         with:
           version: 2.121.0
       # Throwaway local stack inside the runner; never a hosted project (AGENTS.md rule 3).
-      - run: supabase start -x studio,postgres-meta,imgproxy,storage-api,realtime,edge-runtime,logflare,vector,supavisor,mailpit | grep -viE 'key|secret|jwt'
+      # stdout lists keys, so drop it; errors still reach the log via stderr.
+      - run: supabase start -x studio,postgres-meta,imgproxy,storage-api,realtime,edge-runtime,logflare,vector,supavisor,mailpit > /dev/null
       - run: make check-db
 
   docs-check:
