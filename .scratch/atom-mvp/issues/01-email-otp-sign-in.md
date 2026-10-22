@@ -6,14 +6,14 @@
 
 **Cần chủ dự án trước:** đồng ý thêm package theo DEPENDENCIES.md (AGENTS.md quy tắc 5).
 
-**Status:** ready-for-agent
+**Status:** ready-for-human
 
 Thiết kế: F-001, S-01, S-02, S-16 (đăng xuất); ADR-0001…0005; TECH_DESIGN § 2–4; DATA_MODEL `profiles`.
 
-- [ ] Chưa đăng nhập → luôn về S-01; đã đăng nhập → vào tab Hồ sơ (test `redirect`)
-- [ ] Mã OTP sai/hết hạn hiện lỗi rõ ràng, không khóa giao diện (test ViewModel)
-- [ ] Phiên lưu trong Keychain/Keystore qua `SecureSessionStorage` (test với fake)
-- [ ] Đăng ký mới tự tạo một dòng `profiles` riêng tư; RLS: chỉ chủ đọc/sửa (pgTAP)
-- [ ] Test chung: mọi bảng `public` bật RLS (pgTAP)
-- [ ] Mọi chuỗi có trong cả `app_vi.arb` và `app_en.arb`; S-01, S-02 đạt guideline tiếp cận
-- [ ] `make check` và `make check-db` xanh
+- [x] Chưa đăng nhập → luôn về S-01; đã đăng nhập → vào tab Hồ sơ (test `redirect`)
+- [x] Mã OTP sai/hết hạn hiện lỗi rõ ràng, không khóa giao diện (test ViewModel)
+- [x] Phiên lưu trong Keychain/Keystore qua `SecureSessionStorage` (test với fake)
+- [x] Đăng ký mới tự tạo một dòng `profiles` riêng tư; RLS: chỉ chủ đọc/sửa (pgTAP)
+- [x] Test chung: mọi bảng `public` bật RLS (pgTAP)
+- [x] Mọi chuỗi có trong cả `app_vi.arb` và `app_en.arb`; S-01, S-02 đạt guideline tiếp cận
+- [x] `make check` và `make check-db` xanh

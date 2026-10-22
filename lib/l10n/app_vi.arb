@@ -1,0 +1,34 @@
+{
+  "@@locale": "vi",
+  "appTitle": "Atom",
+  "appTagline": "Chứng minh skill bằng bằng chứng thật",
+  "emailLabel": "Email",
+  "emailHint": "ban@example.com",
+  "sendLoginCode": "Gửi mã đăng nhập",
+  "invalidEmail": "Nhập email hợp lệ",
+  "enterCodeTitle": "Nhập mã",
+  "codeSentTo": "Đã gửi mã 6 số tới {email}",
+  "@codeSentTo": {
+    "placeholders": {
+      "email": {"type": "String"}
+    }
+  },
+  "otpHint": "Mã 6 số",
+  "confirm": "Xác nhận",
+  "otpInvalid": "Mã sai hoặc hết hạn",
+  "resendCode": "Gửi lại mã",
+  "noConnection": "Không có kết nối",
+  "retry": "Thử lại",
+  "genericError": "Có lỗi, thử lại",
+  "signOut": "Đăng xuất",
+  "tabProfile": "Hồ sơ",
+  "tabDiscover": "Khám phá",
+  "tabSalary": "Lương",
+  "tabSettings": "Cài đặt",
+  "profileTitle": "Hồ sơ",
+  "profileEmpty": "Hồ sơ của bạn sẽ hiện ở đây.",
+  "discoverTitle": "Khám phá",
+  "salaryTitle": "Lương",
+  "settingsTitle": "Cài đặt",
+  "comingSoon": "Sắp có"
+}
