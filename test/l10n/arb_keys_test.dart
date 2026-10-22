@@ -9,6 +9,11 @@ void main() {
     final vi = _keys(File('lib/l10n/app_vi.arb'));
     expect(vi, en);
   });
+
+  test('the untranslated messages file is empty', () {
+    final file = File('l10n_untranslated.json');
+    expect(jsonDecode(file.readAsStringSync()), <String, dynamic>{});
+  });
 }
 
 Set<String> _keys(File file) {
