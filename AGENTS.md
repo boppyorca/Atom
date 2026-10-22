@@ -24,6 +24,7 @@ Docs are in Vietnamese; code identifiers are in English. Reply to the owner in V
 - `supabase/config.toml`, `supabase/migrations/`, `supabase/tests/` (pgTAP).
 - `.agents/skills/` — mattpocock/skills (installed via `npx skills`, see `skills-lock.json`).
 - `.cursor/rules/` — always-on agent rules; `.cursor/hooks/` — agent hooks.
+- `.cursor/skills/` — ponytail-review, ponytail-audit, ponytail-debt (read-only reports, from DietrichGebert/ponytail @09c434a).
 
 ## Hard rules
 
