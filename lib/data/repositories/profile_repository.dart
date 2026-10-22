@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:harness_app/config/request_timeout.dart';
 import 'package:harness_app/data/services/supabase_service.dart';
 import 'package:harness_app/domain/models/city.dart';
 import 'package:harness_app/domain/models/profile.dart';
@@ -48,7 +49,7 @@ class SupabaseProfileRepository implements ProfileRepository {
 
   Future<Result<T>> _guard<T>(Future<T> Function() action) async {
     try {
-      return Ok(await action());
+      return Ok(await action().timeout(requestTimeout));
     } on SocketException {
       return Error(const NetworkFailure());
     } on HandshakeException {

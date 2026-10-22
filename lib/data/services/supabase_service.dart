@@ -1,4 +1,3 @@
-import 'package:harness_app/config/request_timeout.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseService {
@@ -30,27 +29,17 @@ class SupabaseService {
   String get _userId => client.auth.currentUser!.id;
 
   Future<Map<String, dynamic>> selectOwnProfile(String columns) {
-    return client
-        .from('profiles')
-        .select(columns)
-        .eq('id', _userId)
-        .single()
-        .timeout(requestTimeout);
+    return client.from('profiles').select(columns).eq('id', _userId).single();
   }
 
   Future<void> updateOwnProfile(Map<String, dynamic> values) {
-    return client
-        .from('profiles')
-        .update(values)
-        .eq('id', _userId)
-        .timeout(requestTimeout);
+    return client.from('profiles').update(values).eq('id', _userId);
   }
 
   Future<List<Map<String, dynamic>>> selectCities() {
     return client
         .from('cities')
         .select('id, code, label_vi, label_en')
-        .order('id')
-        .timeout(requestTimeout);
+        .order('id');
   }
 }
