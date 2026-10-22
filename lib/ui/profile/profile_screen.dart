@@ -8,6 +8,39 @@ import 'package:harness_app/ui/core/widgets/error_view.dart';
 import 'package:harness_app/ui/profile/profile_view_model.dart';
 import 'package:provider/provider.dart';
 
+class _ProfileSkeleton extends StatelessWidget {
+  const _ProfileSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final block = AppColors.textSecondary.withValues(alpha: 0.18);
+    Widget bar(double width, double height) => Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: block,
+        borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
+      ),
+    );
+    return Semantics(
+      key: const Key('profile-skeleton'),
+      label: AppLocalizations.of(context).loading,
+      child: ListView(
+        padding: const EdgeInsets.all(AppSpacing.screenPadding),
+        children: [
+          bar(160, 28),
+          const SizedBox(height: AppSpacing.space2),
+          bar(110, 16),
+          const SizedBox(height: AppSpacing.space4),
+          bar(double.infinity, 16),
+          const SizedBox(height: AppSpacing.space2),
+          bar(220, 16),
+        ],
+      ),
+    );
+  }
+}
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -36,9 +69,7 @@ class ProfileScreen extends StatelessWidget {
         ],
       ),
       body: switch ((vm.loading, failure, profile)) {
-        (true, _, _) => Center(
-          child: CircularProgressIndicator(semanticsLabel: l10n.loading),
-        ),
+        (true, _, _) => const _ProfileSkeleton(),
         (_, final failure?, _) => ErrorView(failure: failure, onRetry: vm.load),
         (_, _, final profile?) => ListView(
           padding: const EdgeInsets.all(AppSpacing.screenPadding),

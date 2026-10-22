@@ -1,5 +1,5 @@
 begin;
-select plan(17);
+select plan(20);
 
 insert into auth.users (
   instance_id,
@@ -121,6 +121,38 @@ select lives_ok(
   $$update public.profiles
     set contact_type = 'email', contact_value = 'minh@example.com'$$,
   'valid email contact is accepted'
+);
+
+select lives_ok(
+  $$update public.profiles set seniority = 'fresher'$$,
+  'owner can set seniority'
+);
+
+select throws_ok(
+  $$update public.profiles set seniority = 'lead'$$,
+  '22P02',
+  null,
+  'seniority outside intern/fresher/junior/middle is rejected'
+);
+
+select set_config('request.jwt.claim.sub', '22222222-2222-2222-2222-222222222222', true);
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"22222222-2222-2222-2222-222222222222","role":"authenticated"}',
+  true
+);
+select is_empty(
+  $$update public.profiles
+    set seniority = 'junior'
+    where id = '11111111-1111-1111-1111-111111111111'
+    returning seniority::text$$,
+  'another user cannot change the owner seniority'
+);
+select set_config('request.jwt.claim.sub', '11111111-1111-1111-1111-111111111111', true);
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"11111111-1111-1111-1111-111111111111","role":"authenticated"}',
+  true
 );
 
 select throws_ok(

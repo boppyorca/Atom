@@ -1,5 +1,7 @@
 enum ProfileVisibility { private, public }
 
+enum SeniorityLevel { intern, fresher, junior, middle }
+
 enum ContactLinkType { email, linkedin }
 
 class Profile {
@@ -8,6 +10,7 @@ class Profile {
     required this.displayName,
     this.bio,
     this.cityId,
+    this.seniority,
     this.contactType,
     this.contactValue,
     this.contactVisible = false,
@@ -21,6 +24,9 @@ class Profile {
       displayName: json['display_name'] as String,
       bio: json['bio'] as String?,
       cityId: json['city_id'] as int?,
+      seniority: json['seniority'] == null
+          ? null
+          : SeniorityLevel.values.byName(json['seniority'] as String),
       contactType: contactType == null
           ? null
           : ContactLinkType.values.byName(contactType),
@@ -37,6 +43,7 @@ class Profile {
   final String displayName;
   final String? bio;
   final int? cityId;
+  final SeniorityLevel? seniority;
   final ContactLinkType? contactType;
   final String? contactValue;
   final bool contactVisible;
@@ -47,6 +54,7 @@ class Profile {
     'display_name': displayName,
     'bio': bio,
     'city_id': cityId,
+    'seniority': seniority?.name,
     'contact_type': contactType?.name,
     'contact_value': contactValue,
     'contact_visible': contactVisible,

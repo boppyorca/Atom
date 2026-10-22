@@ -21,7 +21,8 @@ void main() {
       ..cityId = 2
       ..contactType = ContactLinkType.email
       ..contactValue = 'minh@example.com'
-      ..contactVisible = true;
+      ..contactVisible = true
+      ..seniority = SeniorityLevel.fresher;
 
     expect(await vm.save(), isTrue);
 
@@ -32,6 +33,7 @@ void main() {
     expect(reopened.contactType, ContactLinkType.email);
     expect(reopened.contactValue, 'minh@example.com');
     expect(reopened.contactVisible, isTrue);
+    expect(reopened.seniority, SeniorityLevel.fresher);
     expect(reopened.cities.map((c) => c.code), ['hn', 'hcm']);
   });
 
@@ -93,6 +95,19 @@ void main() {
     expect(await vm.save(), isTrue);
     expect(repo.profile.contactType, isNull);
     expect(repo.profile.contactValue, isNull);
+  });
+
+  test('saving never sends the public/private state', () async {
+    final repo = FakeProfileRepository()
+      ..profile = const Profile(
+        id: 'me',
+        displayName: 'Minh',
+        visibility: ProfileVisibility.public,
+      );
+    final vm = await loaded(repo);
+
+    expect(await vm.save(), isTrue);
+    expect(repo.savedKeys, isNot(contains('visibility')));
   });
 
   test('offline save keeps the typed data and shows the failure', () async {

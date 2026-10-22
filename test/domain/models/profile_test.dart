@@ -21,6 +21,7 @@ void main() {
     expect(profile.contactValue, 'https://www.linkedin.com/in/minh');
     expect(profile.contactVisible, isTrue);
     expect(profile.visibility, ProfileVisibility.private);
+    expect(profile.seniority, SeniorityLevel.fresher);
   });
 
   test('Profile reads a new profile row with empty fields', () {
@@ -31,6 +32,7 @@ void main() {
     expect(profile.contactType, isNull);
     expect(profile.contactValue, isNull);
     expect(profile.contactVisible, isFalse);
+    expect(profile.seniority, isNull);
   });
 
   test('Profile writes back the same JSON', () {

@@ -28,6 +28,7 @@ class ProfileEditViewModel extends ChangeNotifier {
 
   String _bio = '';
   int? _cityId;
+  SeniorityLevel? _seniority;
   ContactLinkType? _contactType;
   bool _contactVisible = false;
 
@@ -40,6 +41,12 @@ class ProfileEditViewModel extends ChangeNotifier {
   int? get cityId => _cityId;
   set cityId(int? value) {
     _cityId = value;
+    notifyListeners();
+  }
+
+  SeniorityLevel? get seniority => _seniority;
+  set seniority(SeniorityLevel? value) {
+    _seniority = value;
     notifyListeners();
   }
 
@@ -74,6 +81,7 @@ class ProfileEditViewModel extends ChangeNotifier {
         displayName = profile.displayName;
         _bio = profile.bio ?? '';
         _cityId = profile.cityId;
+        _seniority = profile.seniority;
         _contactType = profile.contactType;
         contactValue = profile.contactValue ?? '';
         _contactVisible = profile.contactVisible;
@@ -102,21 +110,30 @@ class ProfileEditViewModel extends ChangeNotifier {
     saving = true;
     notifyListeners();
     final bioText = _bio.trim();
-    final profile = Profile(
-      id: loaded.id,
-      displayName: name,
-      bio: bioText.isEmpty ? null : bioText,
-      cityId: _cityId,
-      contactType: _contactType,
-      contactValue: _contactType == null ? null : contact,
-      contactVisible: _contactVisible,
-      visibility: loaded.visibility,
-    );
-    final result = await _repository.saveMyProfile(profile);
+    final values = {
+      'display_name': name,
+      'bio': bioText.isEmpty ? null : bioText,
+      'city_id': _cityId,
+      'seniority': _seniority?.name,
+      'contact_type': _contactType?.name,
+      'contact_value': _contactType == null ? null : contact,
+      'contact_visible': _contactVisible,
+    };
+    final result = await _repository.saveMyProfile(values);
     saving = false;
     switch (result) {
       case Ok():
-        _loaded = profile;
+        _loaded = Profile(
+          id: loaded.id,
+          displayName: name,
+          bio: values['bio'] as String?,
+          cityId: _cityId,
+          seniority: _seniority,
+          contactType: _contactType,
+          contactValue: values['contact_value'] as String?,
+          contactVisible: _contactVisible,
+          visibility: loaded.visibility,
+        );
         notifyListeners();
         return true;
       case Error(:final failure):

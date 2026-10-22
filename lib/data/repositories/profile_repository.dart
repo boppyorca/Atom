@@ -13,14 +13,15 @@ abstract class ProfileRepository {
 
   Future<Result<List<City>>> loadCities();
 
-  Future<Result<void>> saveMyProfile(Profile profile);
+  /// `values` holds only the columns the edit screen changes.
+  Future<Result<void>> saveMyProfile(Map<String, dynamic> values);
 }
 
 class SupabaseProfileRepository implements ProfileRepository {
   SupabaseProfileRepository(this._service);
 
   static const _columns =
-      'id, display_name, bio, city_id, contact_type, contact_value, '
+      'id, display_name, bio, city_id, seniority, contact_type, contact_value, '
       'contact_visible, visibility';
 
   final SupabaseService _service;
@@ -41,16 +42,16 @@ class SupabaseProfileRepository implements ProfileRepository {
   }
 
   @override
-  Future<Result<void>> saveMyProfile(Profile profile) {
-    return _guard(
-      () => _service.updateOwnProfile(profile.toJson()..remove('id')),
-    );
+  Future<Result<void>> saveMyProfile(Map<String, dynamic> values) {
+    return _guard(() => _service.updateOwnProfile(values));
   }
 
   Future<Result<T>> _guard<T>(Future<T> Function() action) async {
     try {
       return Ok(await action());
     } on SocketException {
+      return Error(const NetworkFailure());
+    } on HandshakeException {
       return Error(const NetworkFailure());
     } on TimeoutException {
       return Error(const NetworkFailure());

@@ -41,7 +41,7 @@ void main() {
       await pumpApp(tester, profiles, settle: false);
       await tester.pump();
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byKey(const Key('profile-skeleton')), findsOneWidget);
 
       profiles.loadGate!.complete();
       await tester.pumpAndSettle();

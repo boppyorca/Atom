@@ -83,6 +83,20 @@ class _ProfileForm extends StatelessWidget {
             onChanged: (value) => vm.cityId = value,
           ),
           const SizedBox(height: AppSpacing.space4),
+          DropdownButtonFormField<SeniorityLevel?>(
+            initialValue: vm.seniority,
+            decoration: InputDecoration(labelText: l10n.seniorityLabel),
+            items: [
+              DropdownMenuItem(value: null, child: Text(l10n.seniorityNone)),
+              for (final level in SeniorityLevel.values)
+                DropdownMenuItem(
+                  value: level,
+                  child: Text(l10n.seniority(level.name)),
+                ),
+            ],
+            onChanged: (value) => vm.seniority = value,
+          ),
+          const SizedBox(height: AppSpacing.space4),
           Text(
             l10n.contactLabel,
             style: Theme.of(context).textTheme.titleMedium,

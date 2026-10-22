@@ -20,6 +20,7 @@ class FakeProfileRepository implements ProfileRepository {
   Result<void>? loadError;
   Result<void>? saveError;
   int saveCount = 0;
+  Set<String> savedKeys = const {};
   Completer<void>? loadGate;
 
   @override
@@ -38,11 +39,16 @@ class FakeProfileRepository implements ProfileRepository {
   }
 
   @override
-  Future<Result<void>> saveMyProfile(Profile profile) async {
+  Future<Result<void>> saveMyProfile(Map<String, dynamic> values) async {
     saveCount += 1;
     final error = saveError;
     if (error is Error<void>) return error;
-    this.profile = profile;
+    profile = Profile.fromJson({
+      'id': profile.id,
+      'visibility': profile.visibility.name,
+      ...values,
+    });
+    savedKeys = values.keys.toSet();
     return const Ok(null);
   }
 }
