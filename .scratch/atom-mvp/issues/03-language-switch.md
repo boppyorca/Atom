@@ -4,7 +4,7 @@
 
 **Blocked by:** 01
 
-**Status:** ready-for-human
+**Status:** resolved
 
 Thiết kế: F-019 (tiếp cận), F-017, S-16; ADR-0004 (`shared_preferences`); NFR-04.
 
