@@ -19,6 +19,12 @@
   "confirm": "Xác nhận",
   "otpInvalid": "Mã sai hoặc hết hạn",
   "resendCode": "Gửi lại mã",
+  "resendCodeWait": "Gửi lại mã (sau {seconds} giây)",
+  "@resendCodeWait": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
   "noConnection": "Không có kết nối",
   "retry": "Thử lại",
   "genericError": "Có lỗi, thử lại",

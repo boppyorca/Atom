@@ -59,8 +59,12 @@ class OtpScreen extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.space2),
           TextButton(
-            onPressed: vm.running ? null : vm.resend,
-            child: Text(l10n.resendCode),
+            onPressed: vm.canResend ? vm.resend : null,
+            child: Text(
+              vm.secondsLeft > 0
+                  ? l10n.resendCodeWait(vm.secondsLeft)
+                  : l10n.resendCode,
+            ),
           ),
         ],
       ),

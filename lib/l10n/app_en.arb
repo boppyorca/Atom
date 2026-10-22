@@ -19,6 +19,12 @@
   "confirm": "Confirm",
   "otpInvalid": "Wrong or expired code",
   "resendCode": "Resend code",
+  "resendCodeWait": "Resend code (in {seconds} seconds)",
+  "@resendCodeWait": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
   "noConnection": "No connection",
   "retry": "Try again",
   "genericError": "Something went wrong, try again",
