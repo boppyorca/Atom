@@ -67,3 +67,6 @@ google-services.json
 supabase/.env*
 supabase/.branches
 supabase/.temp
+
+# graphify (local code graph, rebuild with `graphify update .`)
+graphify-out/

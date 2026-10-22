@@ -33,3 +33,5 @@ Quy tắc: `.cursor/rules/ponytail.mdc` (luôn bật, mức lite). Giữ hay b�
 ## Kết quả
 
 (chưa đo)
+
+Lưu ý: từ 2026-10-22 dự án có thêm rule graphify (luôn bật). Chạy cả A và B với graphify bật như nhau để chỉ ponytail là khác biệt.
