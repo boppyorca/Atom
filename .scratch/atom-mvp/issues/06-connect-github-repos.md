@@ -8,7 +8,7 @@
 
 **Status:** ready-for-agent
 
-Thiết kế: F-004, S-06; DATA_MODEL `github_connections`, `evidence`; API_CONTRACT `connect_github`, `github-repos`; ADR-0005, ADR-0006.
+Thiết kế: F-019 (tiếp cận), F-004, S-06; DATA_MODEL `github_connections`, `evidence`; API_CONTRACT `connect_github`, `github-repos`; ADR-0005, ADR-0006.
 
 - [ ] `connect_github` đọc `github_username` từ `auth.identities` (pgTAP)
 - [ ] `github-repos` chỉ trả repo công khai, chọn sẵn ≤ 10 không fork, từ chối repo thứ 11 (`deno test`)

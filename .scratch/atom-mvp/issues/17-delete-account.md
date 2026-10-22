@@ -6,7 +6,7 @@
 
 **Status:** ready-for-agent
 
-Thiết kế: F-002, S-18; API_CONTRACT `delete-account`; DATA_MODEL § 6 (cascade); ALG-01; NFR-11.
+Thiết kế: F-019 (tiếp cận), F-002, S-18; API_CONTRACT `delete-account`; DATA_MODEL § 6 (cascade); ALG-01; NFR-11.
 
 - [ ] Sau khi xóa: 0 dòng chứa id đó trong mọi bảng `public`, trừ cột đã `set null` (pgTAP NFR-11)
 - [ ] Xác nhận skill người đó đã cho bị gỡ, mức tin cậy người khác tính lại (pgTAP)

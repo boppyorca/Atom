@@ -1,4 +1,13 @@
-.PHONY: check check-db check-all
+.PHONY: check check-db check-all doctor docs-check next-ticket
+
+doctor:
+	@bash scripts/doctor.sh
+
+docs-check:
+	@bash scripts/docs_check.sh
+
+next-ticket:
+	@bash scripts/next_ticket.sh
 
 check:
 	flutter pub get

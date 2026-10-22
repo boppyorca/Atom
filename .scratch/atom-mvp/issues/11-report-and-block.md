@@ -6,7 +6,7 @@
 
 **Status:** ready-for-agent
 
-Thiết kế: F-013, S-12, S-13, S-17; DATA_MODEL `reports`, `blocks`, `moderation_log`; ALG-02, ALG-04 (lọc chặn).
+Thiết kế: F-019 (tiếp cận), F-013, S-12, S-13, S-17; DATA_MODEL `reports`, `blocks`, `moderation_log`; ALG-02, ALG-04 (lọc chặn).
 
 - [ ] Báo cáo lưu được; không tự báo cáo mình (pgTAP)
 - [ ] Chặn ẩn hồ sơ khỏi `search_profiles`, `get_public_profile`, `endorse_skill` theo cả hai chiều (pgTAP; sửa hàm bằng migration mới)

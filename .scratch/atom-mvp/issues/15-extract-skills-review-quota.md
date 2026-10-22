@@ -8,7 +8,7 @@
 
 **Status:** ready-for-agent
 
-Thiết kế: F-007, F-018, S-03, S-09; DATA_MODEL `ai_jobs`, `skill_suggestions`, `app_settings`; API_CONTRACT `extract-skills`, `review_suggestion`, `get_ai_quota`; ALG-03, ALG-05, ALG-08; NFR-02, NFR-07, NFR-09.
+Thiết kế: F-019 (tiếp cận), F-007, F-018, S-03, S-09; DATA_MODEL `ai_jobs`, `skill_suggestions`, `app_settings`; API_CONTRACT `extract-skills`, `review_suggestion`, `get_ai_quota`; ALG-03, ALG-05, ALG-08; NFR-02, NFR-07, NFR-09.
 
 - [ ] `extract-skills` từ chối khi chưa đồng ý (403) hoặc hết lượt (429) (`deno test`)
 - [ ] ALG-08 đạt 5 test mẫu; từ điển skill hợp lệ (`deno test`)

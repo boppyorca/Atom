@@ -6,7 +6,7 @@
 
 **Status:** ready-for-agent
 
-Thiết kế: F-012, S-11, S-12; API_CONTRACT `search_profiles`, `get_public_profile`; ALG-04.
+Thiết kế: F-019 (tiếp cận), F-012, S-11, S-12; API_CONTRACT `search_profiles`, `get_public_profile`; ALG-04.
 
 - [ ] `search_profiles` đạt 5 test mẫu ALG-04 (pgTAP)
 - [ ] Không trả hồ sơ riêng tư, bị gỡ hoặc của chính mình (pgTAP)

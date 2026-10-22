@@ -6,7 +6,7 @@
 
 **Status:** ready-for-agent
 
-Thiết kế: F-015, S-14, S-15; DATA_MODEL `salary_entries`, `salary_roles`, `cities`; API_CONTRACT `get_salary_aggregate`; ALG-07.
+Thiết kế: F-019 (tiếp cận), F-015, S-14, S-15; DATA_MODEL `salary_entries`, `salary_roles`, `cities`; API_CONTRACT `get_salary_aggregate`; ALG-07.
 
 - [ ] 4 trường bắt buộc; trùng khoản bị chặn; không đọc được khoản người khác (pgTAP)
 - [ ] `get_salary_aggregate` đạt 5 test mẫu ALG-07, không trả số khoản, làm tròn (pgTAP)

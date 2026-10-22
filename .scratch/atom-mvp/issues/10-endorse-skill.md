@@ -6,7 +6,7 @@
 
 **Status:** ready-for-agent
 
-Thiết kế: F-010, F-009, S-12; DATA_MODEL `endorsements`; API_CONTRACT `endorse_skill`; ALG-02, ALG-01.
+Thiết kế: F-019 (tiếp cận), F-010, F-009, S-12; DATA_MODEL `endorsements`; API_CONTRACT `endorse_skill`; ALG-02, ALG-01.
 
 - [ ] `endorse_skill` đạt 5 test mẫu ALG-02, gồm rút lại và tự xác nhận mình bị từ chối (pgTAP)
 - [ ] Mức tin cậy tính lại sau xác nhận/rút lại (pgTAP theo ALG-01)

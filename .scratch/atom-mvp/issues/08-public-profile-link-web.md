@@ -6,7 +6,7 @@
 
 **Status:** ready-for-agent
 
-Thiết kế: F-011, S-03, W-01; API_CONTRACT `get_public_profile`; ADR-0007; `PUBLIC_PROFILE_BASE_URL`.
+Thiết kế: F-019 (tiếp cận), F-011, S-03, W-01; API_CONTRACT `get_public_profile`; ADR-0007; `PUBLIC_PROFILE_BASE_URL`.
 
 - [ ] Bật công khai lần đầu ghi `first_public_at` (pgTAP)
 - [ ] `get_public_profile` trả null khi riêng tư/bị gỡ/không tồn tại; ẩn liên hệ khi chưa bật; `anon` gọi được, không gọi được hàm khác (pgTAP)
