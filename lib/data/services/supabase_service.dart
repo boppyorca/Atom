@@ -108,4 +108,21 @@ class SupabaseService {
         .select('id, role_id, city_id, seniority, gross_monthly_vnd')
         .single();
   }
+
+  Future<bool> selectOwnConsent() async {
+    final row = await client
+        .from('ai_consents')
+        .select('granted')
+        .eq('profile_id', _userId)
+        .maybeSingle();
+    if (row == null) return false;
+    return row['granted'] as bool;
+  }
+
+  Future<void> upsertOwnConsent(bool granted) {
+    return client.from('ai_consents').upsert({
+      'profile_id': _userId,
+      'granted': granted,
+    });
+  }
 }

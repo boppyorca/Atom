@@ -7,6 +7,7 @@ import 'package:harness_app/ui/auth/otp_screen.dart';
 import 'package:harness_app/ui/auth/otp_view_model.dart';
 import 'package:harness_app/ui/auth/sign_in_screen.dart';
 import 'package:harness_app/ui/auth/sign_in_view_model.dart';
+import 'package:harness_app/ui/consent/analysis_consent_screen.dart';
 import 'package:harness_app/ui/discover/discover_screen.dart';
 import 'package:harness_app/ui/profile/profile_edit_screen.dart';
 import 'package:harness_app/ui/profile/profile_edit_view_model.dart';
@@ -131,6 +132,10 @@ GoRouter createRouter(
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: Routes.aiConsent,
+        builder: (context, state) => const AnalysisConsentScreen(),
       ),
     ],
   );

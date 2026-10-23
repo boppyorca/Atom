@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:harness_app/l10n/app_localizations.dart';
 import 'package:harness_app/routing/routes.dart';
+import 'package:harness_app/ui/consent/consent_view_model.dart';
 import 'package:harness_app/ui/core/theme/app_colors.dart';
 import 'package:harness_app/ui/core/theme/app_spacing.dart';
 import 'package:harness_app/ui/core/widgets/error_view.dart';
@@ -48,6 +49,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final vm = context.watch<ProfileViewModel>();
+    final consent = context.watch<ConsentViewModel>();
     final profile = vm.profile;
     final failure = vm.failure;
     final textTheme = Theme.of(context).textTheme;
@@ -92,6 +94,15 @@ class ProfileScreen extends StatelessWidget {
               Text(profile.contactValue!, style: textTheme.bodyLarge),
             ],
             const SizedBox(height: AppSpacing.space4),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.findSkillsAuto),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                final destination = consent.analysisDestination;
+                if (destination != null) context.push(destination);
+              },
+            ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(l10n.skillsTitle),

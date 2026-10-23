@@ -40,6 +40,11 @@ abstract class ProfileRepository {
     required SeniorityLevel seniority,
     required int grossMonthlyVnd,
   });
+
+  /// No saved answer is treated as not granted.
+  Future<Result<bool>> loadAnalysisConsent();
+
+  Future<Result<void>> setAnalysisConsent(bool granted);
 }
 
 class SupabaseProfileRepository implements ProfileRepository {
@@ -131,6 +136,16 @@ class SupabaseProfileRepository implements ProfileRepository {
       );
       return SalaryEntry.fromJson(row);
     });
+  }
+
+  @override
+  Future<Result<bool>> loadAnalysisConsent() {
+    return _guard(_service.selectOwnConsent);
+  }
+
+  @override
+  Future<Result<void>> setAnalysisConsent(bool granted) {
+    return _guard(() => _service.upsertOwnConsent(granted));
   }
 
   Future<Result<T>> _guard<T>(Future<T> Function() action) async {

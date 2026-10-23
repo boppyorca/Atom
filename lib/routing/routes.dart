@@ -8,6 +8,7 @@ abstract final class Routes {
   static const salary = '/salary';
   static const salaryEntry = '/salary/entry';
   static const settings = '/settings';
+  static const aiConsent = '/ai-consent';
 
   static String signInOtpWithEmail(String email) =>
       Uri(path: signInOtp, queryParameters: {'email': email}).toString();

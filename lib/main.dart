@@ -8,6 +8,7 @@ import 'package:harness_app/data/services/secure_session_storage.dart';
 import 'package:harness_app/data/services/supabase_service.dart';
 import 'package:harness_app/l10n/app_localizations.dart';
 import 'package:harness_app/routing/router.dart';
+import 'package:harness_app/ui/consent/consent_view_model.dart';
 import 'package:harness_app/ui/core/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,6 +59,9 @@ class AtomApp extends StatefulWidget {
 class _AtomAppState extends State<AtomApp> {
   late final LocalePreference _localePreference =
       widget.localePreference ?? LocalePreference(MemoryPreferenceStore());
+  late final ConsentViewModel _consent = ConsentViewModel(
+    widget.profileRepository,
+  )..load();
   late final GoRouter _router =
       widget.router ??
       createRouter(widget.authRepository, widget.profileRepository);
@@ -66,16 +70,19 @@ class _AtomAppState extends State<AtomApp> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<LocalePreference>.value(
       value: _localePreference,
-      child: ChangeNotifierProvider<AuthRepository>.value(
-        value: widget.authRepository,
-        child: ListenableBuilder(
-          listenable: _localePreference,
-          builder: (context, _) => MaterialApp.router(
-            theme: AppTheme.light(),
-            locale: widget.locale ?? _localePreference.locale,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            routerConfig: _router,
+      child: ChangeNotifierProvider<ConsentViewModel>.value(
+        value: _consent,
+        child: ChangeNotifierProvider<AuthRepository>.value(
+          value: widget.authRepository,
+          child: ListenableBuilder(
+            listenable: _localePreference,
+            builder: (context, _) => MaterialApp.router(
+              theme: AppTheme.light(),
+              locale: widget.locale ?? _localePreference.locale,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              routerConfig: _router,
+            ),
           ),
         ),
       ),

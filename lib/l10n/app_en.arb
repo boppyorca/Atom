@@ -97,5 +97,17 @@
   "salaryRequired": "Fill in all 4 fields",
   "salaryDuplicate": "You already added this salary",
   "salaryMedian": "Median",
-  "salaryRange": "Range"
+  "salaryRange": "Range",
+  "analysisTitle": "Automatic analysis",
+  "analysisWillRead": "Atom will automatically read:",
+  "analysisReadRepos": "Public GitHub repositories you selected",
+  "analysisReadLinks": "Your evidence links",
+  "analysisReadJob": "A job description you paste",
+  "analysisNever": "Never used:",
+  "analysisNeverPrivate": "Salary, email, contact details",
+  "analysisNoCompany": "Nothing is sent to an AI company.",
+  "analysisRevokeHint": "You can withdraw this in Settings.",
+  "analysisAgree": "Agree",
+  "analysisDecline": "Decline",
+  "findSkillsAuto": "Find skills automatically"
 }
