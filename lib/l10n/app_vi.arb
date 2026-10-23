@@ -97,5 +97,17 @@
   "salaryRequired": "Điền đủ 4 mục",
   "salaryDuplicate": "Khoản này đã có",
   "salaryMedian": "Trung vị",
-  "salaryRange": "Khoảng"
+  "salaryRange": "Khoảng",
+  "analysisTitle": "Phân tích tự động",
+  "analysisWillRead": "Atom sẽ tự động đọc:",
+  "analysisReadRepos": "Repo GitHub công khai bạn đã chọn",
+  "analysisReadLinks": "Link bằng chứng của bạn",
+  "analysisReadJob": "Mô tả job bạn dán vào",
+  "analysisNever": "Không bao giờ dùng:",
+  "analysisNeverPrivate": "Lương, email, liên hệ",
+  "analysisNoCompany": "Không gửi cho công ty AI nào.",
+  "analysisRevokeHint": "Rút lại được trong Cài đặt.",
+  "analysisAgree": "Đồng ý",
+  "analysisDecline": "Từ chối",
+  "findSkillsAuto": "Tìm skill tự động"
 }

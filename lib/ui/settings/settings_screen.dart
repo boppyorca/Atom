@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:harness_app/data/services/locale_preference.dart';
 import 'package:harness_app/l10n/app_localizations.dart';
+import 'package:harness_app/ui/consent/consent_view_model.dart';
 import 'package:harness_app/ui/settings/settings_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -12,6 +13,7 @@ class SettingsScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final vm = context.watch<SettingsViewModel>();
     final preference = context.watch<LocalePreference>();
+    final consent = context.watch<ConsentViewModel>();
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settingsTitle)),
       body: ListView(
@@ -34,6 +36,11 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+          SwitchListTile(
+            title: Text(l10n.analysisTitle),
+            value: consent.granted,
+            onChanged: consent.choose,
           ),
           ListTile(
             title: Text(l10n.signOut),

@@ -99,6 +99,9 @@ class FakeProfileRepository implements ProfileRepository {
     return const Ok(null);
   }
 
+  bool? storedConsent;
+  Completer<void>? consentGate;
+
   @override
   Future<Result<List<SalaryRole>>> loadSalaryRoles() async => Ok(salaryRoles);
 
@@ -125,5 +128,18 @@ class FakeProfileRepository implements ProfileRepository {
         grossMonthlyVnd: grossMonthlyVnd,
       ),
     );
+  }
+
+  @override
+  Future<Result<bool>> loadAnalysisConsent() async {
+    final seen = storedConsent ?? false;
+    await consentGate?.future;
+    return Ok(seen);
+  }
+
+  @override
+  Future<Result<void>> setAnalysisConsent(bool granted) async {
+    storedConsent = granted;
+    return const Ok(null);
   }
 }
