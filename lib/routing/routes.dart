@@ -4,6 +4,8 @@ abstract final class Routes {
   static const profile = '/profile';
   static const profileEdit = '/profile/edit';
   static const skills = '/profile/skills';
+  static const findSkills = '/profile/find-skills';
+  static const compareJob = '/profile/compare-job';
   static const discover = '/discover';
   static const salary = '/salary';
   static const salaryEntry = '/salary/entry';

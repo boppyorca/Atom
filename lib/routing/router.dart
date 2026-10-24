@@ -3,6 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:harness_app/data/repositories/auth_repository.dart';
 import 'package:harness_app/data/repositories/profile_repository.dart';
 import 'package:harness_app/routing/routes.dart';
+import 'package:harness_app/ui/analysis/find_skills_screen.dart';
+import 'package:harness_app/ui/analysis/job_compare_screen.dart';
+import 'package:harness_app/ui/analysis/job_compare_view_model.dart';
 import 'package:harness_app/ui/auth/otp_screen.dart';
 import 'package:harness_app/ui/auth/otp_view_model.dart';
 import 'package:harness_app/ui/auth/sign_in_screen.dart';
@@ -85,6 +88,18 @@ GoRouter createRouter(
                     builder: (context, state) => ChangeNotifierProvider(
                       create: (_) => SkillsViewModel(profileRepository)..load(),
                       child: const SkillsScreen(),
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'find-skills',
+                    builder: (context, state) => const FindSkillsScreen(),
+                  ),
+                  GoRoute(
+                    path: 'compare-job',
+                    builder: (context, state) => ChangeNotifierProvider(
+                      create: (_) =>
+                          JobCompareViewModel(profileRepository)..load(),
+                      child: const JobCompareScreen(),
                     ),
                   ),
                 ],

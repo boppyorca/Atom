@@ -109,5 +109,16 @@
   "analysisRevokeHint": "You can withdraw this in Settings.",
   "analysisAgree": "Agree",
   "analysisDecline": "Decline",
-  "findSkillsAuto": "Find skills automatically"
+  "findSkillsAuto": "Find skills automatically",
+  "findSkills": "Find skills",
+  "chooseReposFirst": "Choose a repository first",
+  "compareJobTitle": "Compare with a job",
+  "compareJob": "Compare",
+  "jobTextLabel": "Paste a job ad",
+  "jobHave": "The job needs these, and your profile has them",
+  "jobMissing": "The job needs these, and your profile does not",
+  "claimSkill": "Add as self-claimed",
+  "jobNoSkills": "No known skill in this job ad",
+  "jobTooLong": "Shorten the job ad, then compare again",
+  "skillListFull": "You already have 50 skills"
 }
