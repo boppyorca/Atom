@@ -96,12 +96,18 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: AppSpacing.space4),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text(l10n.findSkillsAuto),
+              title: Text(l10n.findSkills),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 final destination = consent.analysisDestination;
-                if (destination != null) context.push(destination);
+                context.push(destination ?? Routes.findSkills);
               },
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.compareJobTitle),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(Routes.compareJob),
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,

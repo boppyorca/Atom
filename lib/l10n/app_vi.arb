@@ -109,5 +109,16 @@
   "analysisRevokeHint": "Rút lại được trong Cài đặt.",
   "analysisAgree": "Đồng ý",
   "analysisDecline": "Từ chối",
-  "findSkillsAuto": "Tìm skill tự động"
+  "findSkillsAuto": "Tìm skill tự động",
+  "findSkills": "Tìm skill",
+  "chooseReposFirst": "Hãy chọn repo trước",
+  "compareJobTitle": "So với tin",
+  "compareJob": "So",
+  "jobTextLabel": "Dán tin tuyển dụng",
+  "jobHave": "Tin cần, hồ sơ đã có",
+  "jobMissing": "Tin cần, hồ sơ chưa có",
+  "claimSkill": "Tự khai",
+  "jobNoSkills": "Chưa nhận ra skill trong tin này",
+  "jobTooLong": "Rút ngắn tin rồi so lại",
+  "skillListFull": "Đã đủ 50 skill"
 }
