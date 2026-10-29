@@ -1,4 +1,4 @@
-.PHONY: check check-db check-all doctor docs-check next-ticket
+.PHONY: check check-db check-all check-ai doctor docs-check next-ticket
 
 doctor:
 	@bash scripts/doctor.sh
@@ -21,3 +21,6 @@ check-db:
 	supabase test db
 
 check-all: check check-db
+
+check-ai:
+	@PATH="$$HOME/.deno/bin:$$PATH" deno test --allow-import supabase/functions/tests/gold_repos_test.ts supabase/functions/tests/extract_test.ts supabase/functions/tests/commit_signals_test.ts
