@@ -6,6 +6,8 @@ class FakeAuthRepository extends AuthRepository {
   Result<void> requestResult = const Ok(null);
   Result<void> verifyResult = const Ok(null);
   Result<void> signOutResult = const Ok(null);
+  Result<void> deleteResult = const Ok(null);
+  int signOutCount = 0;
   int requestCount = 0;
   String? lastEmail;
   String? lastToken;
@@ -36,12 +38,16 @@ class FakeAuthRepository extends AuthRepository {
 
   @override
   Future<Result<void>> signOut() async {
+    signOutCount += 1;
     if (signOutResult is Ok<void>) {
       signedIn = false;
       notifyListeners();
     }
     return signOutResult;
   }
+
+  @override
+  Future<Result<void>> deleteAccount() async => deleteResult;
 
   void emitSignedIn() {
     signedIn = true;

@@ -1,0 +1,186 @@
+[
+  {
+    "id": "flutter",
+    "name": "Flutter",
+    "aliases": ["flutter"],
+    "signals": {
+      "languages": [],
+      "dependencies": { "pub": ["flutter"] },
+      "topics": ["flutter"],
+      "files": [],
+      "keywords": ["flutter"],
+      "keywords_case_sensitive": [],
+      "extensions": [".dart"]
+    },
+    "suggestion": { "vi": "Làm một app nhỏ bằng Flutter.", "en": "Build a small Flutter app." }
+  },
+  {
+    "id": "dart",
+    "name": "Dart",
+    "aliases": ["dart"],
+    "signals": {
+      "languages": ["Dart"],
+      "dependencies": {},
+      "topics": [],
+      "files": [],
+      "keywords": ["dart"],
+      "keywords_case_sensitive": [],
+      "extensions": [".dart"]
+    },
+    "suggestion": { "vi": "Viết một đoạn Dart nhỏ.", "en": "Write a small Dart program." }
+  },
+  {
+    "id": "provider",
+    "name": "Provider",
+    "aliases": ["provider"],
+    "signals": {
+      "languages": [],
+      "dependencies": { "pub": ["provider"] },
+      "topics": [],
+      "files": [],
+      "keywords": [],
+      "keywords_case_sensitive": []
+    },
+    "suggestion": { "vi": "Tách trạng thái app bằng Provider.", "en": "Split app state with Provider." }
+  },
+  {
+    "id": "react",
+    "name": "React",
+    "aliases": ["react"],
+    "signals": {
+      "languages": [],
+      "dependencies": { "npm": ["react"] },
+      "topics": ["react"],
+      "files": [],
+      "keywords": [],
+      "keywords_case_sensitive": ["React"]
+    },
+    "suggestion": { "vi": "Làm một trang nhỏ bằng React.", "en": "Build a small React page." }
+  },
+  {
+    "id": "typescript",
+    "name": "TypeScript",
+    "aliases": ["typescript"],
+    "signals": {
+      "languages": ["TypeScript"],
+      "dependencies": {},
+      "topics": [],
+      "files": ["tsconfig.json"],
+      "keywords": ["typescript"],
+      "keywords_case_sensitive": []
+    },
+    "suggestion": { "vi": "Thêm kiểu cho một module TypeScript.", "en": "Add types to a TypeScript module." }
+  },
+  {
+    "id": "python",
+    "name": "Python",
+    "aliases": ["python"],
+    "signals": {
+      "languages": ["Python"],
+      "dependencies": {},
+      "topics": ["python"],
+      "files": ["requirements.txt", "pyproject.toml"],
+      "keywords": ["python"],
+      "keywords_case_sensitive": []
+    },
+    "suggestion": { "vi": "Viết một script Python nhỏ.", "en": "Write a small Python script." }
+  },
+  {
+    "id": "docker",
+    "name": "Docker",
+    "aliases": ["docker"],
+    "signals": {
+      "languages": [],
+      "dependencies": {},
+      "topics": ["docker"],
+      "files": ["Dockerfile"],
+      "keywords": ["docker"],
+      "keywords_case_sensitive": []
+    },
+    "suggestion": { "vi": "Đóng gói app bằng Docker.", "en": "Package the app with Docker." }
+  },
+  {
+    "id": "postgresql",
+    "name": "PostgreSQL",
+    "aliases": ["postgresql", "postgres"],
+    "signals": {
+      "languages": [],
+      "dependencies": {},
+      "topics": ["postgresql", "postgres"],
+      "files": [],
+      "keywords": ["postgresql", "postgres"],
+      "keywords_case_sensitive": []
+    },
+    "suggestion": { "vi": "Tạo một bảng PostgreSQL.", "en": "Create a PostgreSQL table." }
+  },
+  {
+    "id": "swift",
+    "name": "Swift",
+    "aliases": ["swift"],
+    "signals": {
+      "languages": ["Swift"],
+      "dependencies": {},
+      "topics": [],
+      "files": [],
+      "keywords": [],
+      "keywords_case_sensitive": ["Swift"]
+    },
+    "suggestion": { "vi": "Viết một màn hình Swift nhỏ.", "en": "Write a small Swift screen." }
+  },
+  {
+    "id": "kotlin",
+    "name": "Kotlin",
+    "aliases": ["kotlin"],
+    "signals": {
+      "languages": ["Kotlin"],
+      "dependencies": {},
+      "topics": [],
+      "files": [],
+      "keywords": ["kotlin"],
+      "keywords_case_sensitive": []
+    },
+    "suggestion": { "vi": "Viết một hàm Kotlin nhỏ.", "en": "Write a small Kotlin function." }
+  },
+  {
+    "id": "rest-api",
+    "name": "REST API",
+    "aliases": ["rest api"],
+    "signals": {
+      "languages": [],
+      "dependencies": {},
+      "topics": [],
+      "files": [],
+      "keywords": ["REST API"],
+      "keywords_case_sensitive": []
+    },
+    "suggestion": { "vi": "Viết một REST API nhỏ.", "en": "Build a small REST API." }
+  },
+  {
+    "id": "ci-cd",
+    "name": "CI/CD",
+    "aliases": ["ci/cd"],
+    "signals": {
+      "languages": [],
+      "dependencies": {},
+      "topics": [],
+      "files": [],
+      "keywords": ["CI/CD"],
+      "keywords_case_sensitive": []
+    },
+    "suggestion": { "vi": "Thêm một bước CI/CD.", "en": "Add a CI/CD step." }
+  },
+  {
+    "id": "go",
+    "name": "Go",
+    "aliases": [],
+    "signals": {
+      "languages": ["Go"],
+      "dependencies": {},
+      "topics": [],
+      "files": ["go.mod"],
+      "keywords": [],
+      "keywords_case_sensitive": ["Go"]
+    },
+    "suggestion": { "vi": "Viết một chương trình Go nhỏ.", "en": "Write a small Go program." }
+  }
+]

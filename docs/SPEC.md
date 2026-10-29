@@ -33,3 +33,9 @@ Mạng xã hội, phỏng vấn thử, thông báo đẩy (Should); Figma/Behanc
 - [FEATURES.md](FEATURES.md): tính năng và tiêu chí chấp nhận.
 - [REQUIREMENTS_AGREEMENT.md](REQUIREMENTS_AGREEMENT.md): quyết định, giả định, câu hỏi mở, rủi ro.
 - [GLOSSARY.md](../GLOSSARY.md): thuật ngữ.
+
+## Phụ lục nháp: ô chat (chờ xác nhận, 2026-10-28)
+
+Chưa thuộc phạm vi bản đã chốt. Không được viết code cho phần này trước khi chủ dự án xác nhận mục 11 của [REQUIREMENTS_AGREEMENT.md](REQUIREMENTS_AGREEMENT.md).
+
+Yêu cầu chức năng: F-025 trong [FEATURES.md](FEATURES.md). Yêu cầu phi chức năng: NFR-14 đến NFR-16 trong [TECH_DESIGN.md](design/TECH_DESIGN.md). Dữ liệu: mục 8 của [DATA_MODEL.md](design/DATA_MODEL.md). Giải thuật: ALG-10 trong [ALGORITHMS.md](design/ALGORITHMS.md). Giao diện: S-19 trong [UI_DESIGN.md](design/UI_DESIGN.md).

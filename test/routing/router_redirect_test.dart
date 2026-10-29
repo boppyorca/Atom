@@ -66,4 +66,25 @@ void main() {
 
     expect(router.state.uri.path, Routes.signIn);
   });
+
+  testWidgets('GitHub login return opens the repo screen', (tester) async {
+    final profiles = FakeProfileRepository();
+    final auth = FakeAuthRepository()..signedIn = true;
+    final router = createRouter(auth, profiles);
+    await tester.pumpWidget(
+      AtomApp(
+        authRepository: auth,
+        profileRepository: profiles,
+        router: router,
+        locale: const Locale('vi'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    router.go('com.example.harnessapp://login-callback/?code=abc');
+    await tester.pumpAndSettle();
+
+    expect(router.state.uri.path, Routes.githubRepos);
+    expect(find.text('Page Not Found'), findsNothing);
+  });
 }

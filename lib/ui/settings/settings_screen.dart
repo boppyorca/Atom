@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:harness_app/data/services/locale_preference.dart';
 import 'package:harness_app/l10n/app_localizations.dart';
+import 'package:harness_app/routing/routes.dart';
 import 'package:harness_app/ui/consent/consent_view_model.dart';
 import 'package:harness_app/ui/settings/settings_view_model.dart';
 import 'package:provider/provider.dart';
@@ -43,9 +45,21 @@ class SettingsScreen extends StatelessWidget {
             onChanged: consent.choose,
           ),
           ListTile(
+            title: Text(l10n.noticesTitle),
+            onTap: () => context.push(Routes.notices),
+          ),
+          ListTile(
+            title: Text(l10n.blockedPeople),
+            onTap: () => context.push(Routes.blockedPeople),
+          ),
+          ListTile(
             title: Text(l10n.signOut),
             enabled: !vm.running,
             onTap: vm.signOut,
+          ),
+          ListTile(
+            title: Text(l10n.deleteAccount),
+            onTap: () => context.push(Routes.deleteAccount),
           ),
         ],
       ),

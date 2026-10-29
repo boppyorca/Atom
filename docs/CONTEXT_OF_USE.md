@@ -55,3 +55,13 @@
 
 - Ngân sách gần như bằng 0; chi phí AI có trần mỗi tháng (20 USD/tháng khi thử nghiệm kín).
 - Dữ liệu cá nhân theo Nghị định 13/2023/NĐ-CP [GIẢ ĐỊNH: là khung pháp lý áp dụng, cần kiểm chứng].
+
+## KB-6: Hỏi ô chat (nháp, chờ xác nhận, F-025)
+
+1. Minh đã đồng ý dùng phân tích tự động và đã có vài skill trên hồ sơ.
+2. Minh mở ô chat, dán một tin tuyển dụng, hỏi "Mình còn thiếu gì?".
+3. App hỏi model trên máy nhà trước. Máy nhà đang mở thì câu trả lời không rời khỏi máy.
+4. Máy nhà tắt thì app hỏi Groq. Groq hết lượt miễn phí thì hỏi Z.ai, model miễn phí.
+5. Câu trả lời có các đề xuất. Minh bấm Nhận với skill thiếu, bấm Bỏ với đề xuất không đúng.
+6. Minh tắt app, mở lại, vẫn thấy cuộc trò chuyện của mình. Người khác không thấy.
+7. Cả ba bên đều không trả lời: một câu báo lỗi và nút Thử lại. Hồ sơ của Minh không đổi.

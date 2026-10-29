@@ -6,7 +6,7 @@
 
 **Cần chủ dự án trước:** duyệt từ điển skill ban đầu (ADR-0010). Có thể chia đôi khi bắt đầu (ví dụ: chạy job + hạn mức / duyệt gợi ý).
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Thiết kế: F-019 (tiếp cận), F-007, F-018, S-03, S-09; DATA_MODEL `ai_jobs`, `skill_suggestions`, `app_settings`; API_CONTRACT `extract-skills`, `review_suggestion`, `get_ai_quota`; ALG-03, ALG-05, ALG-08; NFR-02, NFR-07, NFR-09.
 
@@ -22,3 +22,7 @@ Thiết kế: F-019 (tiếp cận), F-007, F-018, S-03, S-09; DATA_MODEL `ai_job
 ## Comments
 
 - 2026-10-23: Chủ dự án chốt hướng model riêng. Bản app vẫn dùng bộ từ khóa (ADR-0010). Model học sau, không chặn các ticket trước 15. Model đầu chỉ nhận skill trong một repo GitHub. Dữ liệu dạy chỉ là các lần chấp nhận hoặc bỏ gợi ý, và chỉ khi người dùng đã đồng ý cho phép học. Chưa gắn model vào app.
+- 2026-10-25: Chủ dự án chấp nhận danh sách ngắn: Flutter, Dart, React, TypeScript, Python, Docker, PostgreSQL, Swift, Kotlin. Thêm Provider vì bài mẫu đã chốt cần skill này.
+- 2026-10-25: `deno test extract_test.ts` 7 passed. `skill_suggestions_test.sql` 12 passed. Bộ dữ liệu đầy đủ 95 bài đạt. App 78 bài đạt. Màn đề xuất có hết giờ và dấu kết quả mới.
+- 2026-10-25: Đã nối bước đọc repo. `deno test read_repo_test.ts` 3 passed: file repo giả thành gợi ý Flutter/Provider/Dart; repo mất thì lỗi nguồn; GitHub lỗi thì dừng; skill đã Bỏ chỉ ẩn khi bộ repo chưa đổi.
+

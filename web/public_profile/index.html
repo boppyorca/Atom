@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atom</title>
+  <style>
+    body { font-family: sans-serif; margin: 24px; line-height: 1.5; color: #111827; white-space: pre-line; }
+    button { min-height: 48px; margin-right: 8px; }
+    a { color: #1D4ED8; }
+  </style>
+</head>
+<body>
+  <div>
+    <button type="button" id="vi">Tiếng Việt</button>
+    <button type="button" id="en">English</button>
+  </div>
+  <main id="page">Đang tải</main>
+  <script>
+    const text = {
+      vi: { missing: "Hồ sơ không tồn tại", loading: "Đang tải", skills: "Skill", evidence: "Bằng chứng" },
+      en: { missing: "Profile not found", loading: "Loading", skills: "Skills", evidence: "Evidence" }
+    };
+    let language = navigator.language.toLowerCase().startsWith("vi") ? "vi" : "en";
+    const params = new URLSearchParams(location.search);
+    const profileId = params.get("id");
+    const page = document.getElementById("page");
+
+    function showMissing() {
+      page.textContent = text[language].missing;
+    }
+
+    async function load() {
+      page.textContent = text[language].loading;
+      const base = window.ATOM_SUPABASE_URL;
+      const key = window.ATOM_SUPABASE_KEY;
+      if (!base || !key || !profileId) {
+        showMissing();
+        return;
+      }
+      const response = await fetch(base.replace(/\/$/, "") + "/rest/v1/rpc/get_public_profile", {
+        method: "POST",
+        headers: { apikey: key, "Content-Type": "application/json" },
+        body: JSON.stringify({ p_profile_id: profileId })
+      });
+      if (!response.ok) {
+        showMissing();
+        return;
+      }
+      const profile = await response.json();
+      if (!profile) {
+        showMissing();
+        return;
+      }
+      const city = profile.city ? profile.city[language === "vi" ? "label_vi" : "label_en"] : "";
+      const skills = (profile.skills || []).map((skill) => skill.name).join(", ");
+      const evidence = (profile.evidence || []).map((item) => item.title || item.url).join(", ");
+      page.textContent = [profile.display_name, profile.bio || "", city, text[language].skills + ": " + skills, text[language].evidence + ": " + evidence].filter(Boolean).join("\n");
+    }
+
+    document.getElementById("vi").onclick = () => { language = "vi"; load(); };
+    document.getElementById("en").onclick = () => { language = "en"; load(); };
+    load();
+  </script>
+</body>
+</html>

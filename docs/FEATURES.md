@@ -85,7 +85,7 @@
 - **User story:** Là ứng viên, tôi muốn tự thêm skill, để ghi nhận cả những skill chưa có bằng chứng.
 - **Tiêu chí chấp nhận:**
   - [ ] Thêm/xóa skill thủ công; skill tự khai hiện mức "tự khai".
-  - [ ] Gắn được bằng chứng có sẵn (repo/link) vào skill tự khai thì skill lên mức "có bằng chứng" [GIẢ ĐỊNH: gắn thủ công đủ để lên mức này, không cần AI].
+  - [ ] Gắn link bài viết hoặc ghi chú vào skill không tự nâng mức. Mức "có bằng chứng" chỉ đến từ tín hiệu commit đủ ngưỡng và một tín hiệu độc lập.
 - **Phụ thuộc:** F-003
 - **Trạng thái:** Agreed
 
@@ -93,7 +93,7 @@
 - **User story:** Là người xem hồ sơ, tôi muốn biết mỗi skill đáng tin tới đâu, để đánh giá đúng ứng viên.
 - **Tiêu chí chấp nhận:**
   - [ ] Mỗi skill hiển thị đúng một mức: tự khai, có bằng chứng, được xác nhận.
-  - [ ] Có bằng chứng = có ≥ 1 nguồn gắn với skill. Được xác nhận = có bằng chứng và có ≥ 1 lượt xác nhận hợp lệ [GIẢ ĐỊNH: ngưỡng 1 lượt].
+  - [ ] Có bằng chứng = có hoạt động mã nguồn đáng kể cho skill đó: tín hiệu commit đủ ngưỡng và một tín hiệu độc lập. Không có nghĩa là thành thạo. Link và chữ trong README không đủ.
   - [ ] Mức được tính lại khi bằng chứng hoặc lượt xác nhận thay đổi.
 - **Phụ thuộc:** F-007, F-008, F-010
 - **Trạng thái:** Agreed
@@ -230,3 +230,21 @@
 - **Tiêu chí chấp nhận:** chưa viết.
 - **Phụ thuộc:** F-015, F-006
 - **Trạng thái:** Draft
+
+## Nháp chờ xác nhận (2026-10-28)
+
+Chưa thuộc bản đã chốt. Chỉ có hiệu lực sau khi chủ dự án xác nhận mục 11 của biên bản yêu cầu.
+
+### F-025 · Ô chat với agent
+- **User story:** Là ứng viên, tôi muốn hỏi một agent về skill và tin tuyển dụng của mình, để nhận đề xuất rồi tự quyết định nhận hay bỏ.
+- **Tiêu chí chấp nhận:**
+  - [ ] Chưa đồng ý phân tích tự động thì không gửi được câu hỏi. Màn đồng ý nói rõ: máy nhà trả lời thì chữ ở trên máy; máy nhà không trả lời thì chữ có thể sang Groq hoặc Z.ai.
+  - [ ] Thứ tự hỏi: Ollama trên cùng máy với server, rồi Groq gói miễn phí, rồi Z.ai chỉ model GLM-4.7-Flash. Không gọi model mất phí. Không gọi Together AI.
+  - [ ] Gửi đi chỉ có: câu người dùng gõ, tên skill trên hồ sơ, đoạn tin tuyển dụng người dùng dán trong ô chat, tên repo đã chọn, tên file, tên thư viện, và đoạn đầu file giới thiệu công khai. Không gửi lương, email, cách liên hệ.
+  - [ ] Agent chỉ tạo đề xuất. Hồ sơ đổi khi người dùng bấm Nhận. Bấm Bỏ thì hồ sơ không đổi. Không bấm hai lần cho cùng một đề xuất.
+  - [ ] Cuộc trò chuyện lưu trong tài khoản. Chỉ chủ tài khoản đọc được. Xóa tài khoản thì xóa cuộc trò chuyện.
+  - [ ] Mỗi lần Nhận hoặc Bỏ được lưu lại để dùng sau. Bản này không train model.
+  - [ ] Cả ba bên không trả lời: một câu và nút Thử lại. Lượt lỗi không bị tính.
+  - [ ] Khóa Groq và Z.ai chỉ nằm trong file môi trường trên máy chủ dự án, không nằm trong app, không ghi vào git.
+- **Phụ thuộc:** F-001, F-006, F-007, F-014
+- **Trạng thái:** Draft, chờ xác nhận

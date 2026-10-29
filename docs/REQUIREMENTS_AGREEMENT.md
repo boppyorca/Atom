@@ -163,3 +163,35 @@ KUN, 2026-10-22
 | Nháp 0.1 | 2026-10-22 | Bản nháp đầu từ phỏng vấn Giai đoạn A | — | — | — |
 | Nháp 0.1 (rà soát) | 2026-10-22 | Trả lời Q-001 → Q-017 (D-030 → D-046); thêm A-017 → A-027, R-008; Q-006, Q-008 thu hẹp, không chặn v1.0 | Giai đoạn C | Tiêu chí Must không còn [MỞ] | KUN |
 | 1.0 | 2026-10-22 | Chốt biên bản; F-001 → F-019 chuyển Agreed; F-020 → F-024 giữ Draft | Chủ dự án xác nhận | Từ đây mọi thay đổi ghi vào mục này | KUN |
+| Nháp 1.1 | 2026-10-28 | Đề xuất F-025 ô chat, mục 11. Chưa sửa mục 1–7 | Chủ dự án yêu cầu viết tài liệu trước khi làm | Chưa có hiệu lực cho đến khi có câu xác nhận | Chờ KUN |
+
+## 11. Đề xuất bổ sung: ô chat (chưa có hiệu lực)
+
+Ngày 2026-10-28 chủ dự án yêu cầu viết tài liệu trước khi làm ticket ô chat. Mục 1–7 của bản 1.0 không đổi. Phần dưới chỉ có hiệu lực khi chủ dự án ghi câu xác nhận ở cuối mục này.
+
+| Mã | Nội dung | Lý do |
+|---|---|---|
+| D-047 | Ô chat là cửa riêng. Tìm skill và so với tin vẫn dùng danh sách có sẵn, không gửi chữ ra ngoài | Giữ quyết định 22/10 cho hai việc đã làm |
+| D-048 | Thứ tự: Ollama trên cùng máy với server, rồi Groq gói miễn phí, rồi Z.ai chỉ GLM-4.7-Flash | Chủ dự án chốt thứ tự; chi phí giữ 0 đồng |
+| D-049 | Together AI chưa dùng | Gói hiện tại phải trả tiền |
+| D-050 | Gửi cho agent: câu chat, tên skill, tin người dùng dán trong ô chat, phần chữ công khai của repo đã chọn (tên repo, tên file, tên thư viện, đoạn đầu file giới thiệu). Không gửi lương, email, cách liên hệ | Chủ dự án chọn mức B và chấp nhận chữ chat có thể được Groq, Z.ai dùng để cải thiện sản phẩm của họ |
+| D-051 | Agent chỉ đề xuất. Người dùng bấm Nhận hoặc Bỏ. Agent không tự sửa hồ sơ | Giống cách duyệt skill |
+| D-052 | Cuộc trò chuyện lưu trong tài khoản, chỉ chủ đọc | Chủ dự án chọn lưu trong tài khoản |
+| D-053 | Mỗi lần Nhận hoặc Bỏ được lưu và Ollama dựng lại model trên chính máy này. Không gửi dữ liệu học đi nơi khác | Chủ dự án muốn train tại máy nhà |
+| D-054 | Cả ba bên không trả lời: một câu và nút Thử lại | Cùng cách với các việc phân tích khác |
+| D-055 | Khóa API chỉ ở file môi trường trên máy, không dán vào cuộc trò chuyện, không đưa vào app | Chủ dự án giữ khóa |
+
+Giả định của riêng phần này, chưa kiểm chứng:
+
+| Mã | Nội dung |
+|---|---|
+| A-028 | Ollama chạy trên cùng máy với server local, cổng 11434. Điện thoại không gọi thẳng Ollama |
+| A-029 | Gói miễn phí của Groq còn dùng được, không cần thẻ |
+| A-030 | GLM-4.7-Flash của Z.ai còn giá 0 đồng. Model đời mới hơn không được gọi |
+| A-031 | Mỗi người tối đa 30 câu hỏi một tháng. Số này đổi được từ hệ thống. Lượt lỗi không tính. Con số 30 là điểm xuất phát, chủ dự án được sửa trước khi xác nhận |
+
+### Xác nhận của chủ dự án
+
+> Tôi xác nhận bản nháp ô chat. Ollama tự train trên máy tôi.
+
+Chủ dự án, 2026-10-28

@@ -18,6 +18,8 @@ abstract class AuthRepository extends ChangeNotifier {
   });
 
   Future<Result<void>> signOut();
+
+  Future<Result<void>> deleteAccount();
 }
 
 class SupabaseAuthRepository extends AuthRepository {
@@ -48,6 +50,9 @@ class SupabaseAuthRepository extends AuthRepository {
 
   @override
   Future<Result<void>> signOut() => _guard(_service.signOut);
+
+  @override
+  Future<Result<void>> deleteAccount() => _guard(_service.deleteAccount);
 
   Future<Result<void>> _guard(
     Future<void> Function() action, {

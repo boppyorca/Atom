@@ -4,7 +4,11 @@
 
 **Blocked by:** 11, 13, 16
 
-**Status:** ready-for-agent
+**Status:** claimed
+
+## Comments
+
+- 2026-10-25: Xóa user thì hồ sơ, skill, link và lương biến mất. `delete_account_test.sql` 4 passed. Hàm xóa lấy id từ người đang đăng nhập, không lấy id app gửi. App: xóa lỗi thì vẫn đăng nhập; xóa xong thì đăng xuất. Bài app 4 passed. Chưa có bảng xác nhận skill nên chưa kiểm mức tin cậy của người khác. Chưa bấm xóa trên điện thoại.
 
 Thiết kế: F-019 (tiếp cận), F-002, S-18; API_CONTRACT `delete-account`; DATA_MODEL § 6 (cascade); ALG-01; NFR-11.
 

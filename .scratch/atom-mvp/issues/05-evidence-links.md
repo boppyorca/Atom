@@ -4,7 +4,11 @@
 
 **Blocked by:** 04
 
-**Status:** ready-for-agent
+**Status:** claimed
+
+## Comments
+
+- 2026-10-25: Màn link bài viết và sản phẩm được gắn lại trên bảng bằng chứng đã có. Link sai bị từ chối. Link thứ 11 bị từ chối. Bài app 5 passed. `evidence_links_test.sql` 3 passed. Đã cài lên iPhone 16.
 
 Thiết kế: F-019 (tiếp cận), F-005, F-008, F-009, S-05, S-07; DATA_MODEL `evidence`, `skill_evidence`; ALG-01.
 

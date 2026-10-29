@@ -158,6 +158,7 @@ Mã ở `supabase/functions/<tên>/index.ts`; dùng chung `_shared/skill_diction
 - **Lỗi (trong job, ghi `ai_jobs.error_code`):** `GITHUB_UNAVAILABLE`, `SOURCE_UNREADABLE`, `TIMEOUT`, `INTERNAL`.
 - **Thử lại:** gọi lại chính function này (tạo job mới; job lỗi không bị tính lượt).
 - **Ví dụ:** `await supabase.functions.invoke('extract-skills', body: {});`
+- `review_suggestion` trả `{ "skill_id", "confidence", "reason" }`. `confidence` do hàm tín hiệu tính. Bấm Nhận không tự ghi mức. `reason` là `no_signals`, `weak_only`, `strong_below_threshold`, `strong_no_independent`, `supporting_only` hoặc `evidenced`.
 
 ### 4.3 `analyze-gap` — phân tích khoảng cách skill, chạy nền (F-014, F-018)
 

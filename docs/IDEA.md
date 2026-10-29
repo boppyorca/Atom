@@ -33,3 +33,13 @@ Lập trình viên mới vào nghề có năng lực nhưng **không chứng min
 - Không đọc repo GitHub riêng tư.
 - Không thu tiền, không quảng cáo.
 - Không có bản web đầy đủ hay bố cục riêng cho máy tính bảng.
+
+## Bổ sung nháp: ô chat với agent (chờ xác nhận, 2026-10-28)
+
+Ô chat là một cửa riêng, chưa nằm trong bản đã chốt ngày 22/10. Tìm skill và so với tin tuyển dụng vẫn dùng danh sách skill có sẵn trong app, chi phí 0 đồng, không gửi chữ ra ngoài.
+
+Ô chat để người dùng hỏi về hồ sơ của mình. Agent được đọc câu hỏi, tên skill, mô tả tin người dùng vừa dán, và phần chữ công khai của repo đã chọn. Agent chỉ đề xuất. Người dùng bấm Nhận hoặc Bỏ. Agent không tự sửa hồ sơ.
+
+Thứ tự hỏi: model trên máy nhà (Ollama) trước. Máy nhà không trả lời thì hỏi Groq, gói miễn phí. Groq không trả lời thì hỏi Z.ai, chỉ model miễn phí GLM-4.7-Flash. Cả ba đều không trả lời thì hiện một câu và nút Thử lại.
+
+Chữ gửi cho Groq hoặc Z.ai có thể được hai bên dùng để cải thiện sản phẩm của họ. Chữ do Ollama trả lời thì ở trên máy nhà. Lương, email và cách liên hệ không gửi cho agent.

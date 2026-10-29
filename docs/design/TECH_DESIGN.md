@@ -138,9 +138,9 @@ web/public_profile/              # W-01: index.html, app.js, styles.css
 - Admin thao tác qua Supabase Studio; mọi lần gỡ ghi `moderation_log` (A-027, R-008).
 
 ### 5.3 Dữ liệu gửi ra ngoài
-- Không gửi dữ liệu người dùng cho nhà cung cấp AI nào (ADR-0010). Ra ngoài chỉ có: gọi GitHub API để đọc repo công khai đã chọn, và tải trang của link người dùng đã thêm.
+- Không gửi dữ liệu người dùng cho nhà cung cấp AI nào ở bước trích skill (ADR-0010). Bước trích skill gọi GitHub API cho repo công khai đã chọn. Trang link bài viết chưa được tải.
 - Đầu vào bộ quy tắc được dựng bởi hàm thuần `buildExtractInput()` / `buildGapInput()` có unit test khẳng định **không** có khóa `salary`, `email`, `contact`, `display_name` (F-006).
-- Đọc link (SSRF): chỉ `http/https`, phân giải tên miền và chặn IP nội bộ/loopback/link-local, tối đa 1 MB, 10 giây, tối đa 3 lần chuyển hướng [GIẢ ĐỊNH].
+- Đọc link bài viết: chưa làm. Khi làm sau, chỉ `http/https`, chặn IP nội bộ, tối đa 1 MB và 10 giây.
 
 ### 5.4 Quyền riêng tư
 - Hồ sơ mặc định riêng tư; liên hệ mặc định ẩn; trang công khai chỉ hiện trường đã chọn.
@@ -165,6 +165,14 @@ web/public_profile/              # W-01: index.html, app.js, styles.css
 | NFR-11 | Xóa sạch | Sau khi xóa tài khoản: 0 dòng chứa id đó trong mọi bảng `public` (trừ cột đã `set null`) | pgTAP: xóa người dùng trong `auth.users` rồi đếm từng bảng | F-002 |
 | NFR-12 | Đo được kích hoạt | Tính được `activationRate` 7 ngày từ dữ liệu sẵn có | Truy vấn § 7 chạy được trên dữ liệu seed | D-040, A-022 |
 | NFR-13 | Kiểm thử tự động | `make check` và `make check-db` xanh trước mỗi lần báo xong | Chạy lệnh, báo kết quả thật | SPEC, AGENTS.md |
+
+NFR-14 đến NFR-16 là nháp cho F-025, chưa có hiệu lực. NFR-07 và NFR-09 vẫn giữ nguyên cho tìm skill và so với tin.
+
+| Mã | Yêu cầu | Mục tiêu | Cách kiểm | Nguồn |
+|---|---|---|---|---|
+| NFR-14 | Ô chat không gửi dữ liệu cấm | 0 trường lương, email, liên hệ trong gói gửi agent; 0 lời gọi model mất phí | Test ALG-10 #5; giả lập `fetch` và kiểm địa chỉ chỉ là Ollama local, Groq hoặc Z.ai model miễn phí | F-025, D-048, D-050 |
+| NFR-15 | Chat chỉ chủ đọc | Người khác đọc cuộc trò chuyện thì 0 dòng | pgTAP | F-025, D-052 |
+| NFR-16 | Khóa không vào app | 0 lần chuỗi khóa Groq hoặc Z.ai trong `lib/` và `web/` | Rà mã trước khi báo xong | D-055 |
 
 ## 7. Đo tỷ lệ kích hoạt (D-040, A-022)
 

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:harness_app/config/env.dart';
+import 'package:harness_app/domain/models/profile.dart';
 import 'package:harness_app/l10n/app_localizations.dart';
 import 'package:harness_app/routing/routes.dart';
 import 'package:harness_app/ui/consent/consent_view_model.dart';
@@ -94,20 +97,73 @@ class ProfileScreen extends StatelessWidget {
               Text(profile.contactValue!, style: textTheme.bodyLarge),
             ],
             const SizedBox(height: AppSpacing.space4),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.publicProfile),
+              value: profile.visibility == ProfileVisibility.public,
+              onChanged: vm.setPublic,
+            ),
+            if (profile.visibility == ProfileVisibility.public)
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.copyProfileLink),
+                subtitle: Text(Env.publicProfileUrl(profile.id)),
+                onTap: () {
+                  Clipboard.setData(
+                    ClipboardData(text: Env.publicProfileUrl(profile.id)),
+                  );
+                },
+              ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.githubReposTitle),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(Routes.githubRepos),
+            ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(l10n.findSkillsAuto),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 final destination = consent.analysisDestination;
-                if (destination != null) context.push(destination);
+                context.push(destination ?? Routes.suggestions);
               },
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.evidenceTitle),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(Routes.evidence),
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(l10n.skillsTitle),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push(Routes.skills),
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.gapTitle),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                final destination = consent.analysisDestination;
+                context.push(destination ?? Routes.gap);
+              },
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.chatTitle),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                final destination = consent.analysisDestination;
+                context.push(destination ?? Routes.chat);
+              },
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.feedTitle),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(Routes.feed),
             ),
           ],
         ),

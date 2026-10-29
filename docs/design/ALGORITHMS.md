@@ -8,12 +8,13 @@
 
 **Nơi chạy:** hàm SQL `recompute_skill_confidence(skill_id)`, gọi bởi trigger `after insert or delete` trên `skill_evidence` và `endorsements`.
 
-1. `has_evidence` = tồn tại dòng `skill_evidence` của skill.
-2. `has_endorsement` = tồn tại dòng `endorsements` của skill.
-3. `confidence` =
-   - `endorsed` nếu `has_evidence` **và** `has_endorsement` (ngưỡng 1 lượt, A-005);
-   - `evidenced` nếu chỉ `has_evidence`;
-   - `self_claimed` nếu không có bằng chứng (kể cả khi còn lượt xác nhận).
+1. Có dòng `skill_evidence` chỉ để hiện liên kết trên hồ sơ. Dòng đó không tự nâng mức.
+2. Bảng `endorsements` chưa có. Hàm không ghi đè mức `endorsed` nếu dòng đã mang mức đó.
+3. `confidence` do `public._skill_confidence` tính từ `evidence_signal`, rồi `recompute_skill_confidence` ghi vào cột. Bấm Nhận không tự đặt mức.
+   - `evidenced` khi có ít nhất một tín hiệu `commit_activity` đủ ngưỡng trong `evidence_policy` và thêm một tín hiệu độc lập: `manifest_dependency` ở repo đã có ít nhất 1 commit hợp lệ, hoặc tín hiệu mạnh ở một `repo_ref` khác.
+   - README, topic, ngôn ngữ cả repo, link bài viết và ghi chú tay là tín hiệu yếu, không đủ để lên `evidenced`.
+   - Không có tín hiệu → `self_claimed`, mã `no_signals`. Chỉ tín hiệu yếu → `weak_only`. Mạnh chưa đủ ngưỡng → `strong_below_threshold`. Mạnh nhưng chưa có tín hiệu độc lập → `strong_no_independent`. Chỉ có khai báo thư viện → `supporting_only`.
+   - Dòng đang là `endorsed` không bị hàm này ghi đè. Bảng xác nhận skill chưa có trong migration.
 4. Cập nhật `skills.confidence` nếu khác giá trị cũ.
 
 **Trường hợp biên:**
@@ -216,7 +217,7 @@ Chuẩn hóa tên (`normalize`) giống `skills.name_normalized`: bỏ khoảng 
 
 **Nơi chạy:** phần chạy nền của `extract-skills` (ALG-05 bước 7).
 
-**Đầu vào:** các `evidence` của người dùng: repo `github_repo` đã chọn (≤ 10) và link `article`/`product` (≤ 10). Không dùng tên hiển thị, email, liên hệ, lương (F-006).
+**Đầu vào:** các repo `github_repo` đã chọn (≤ 10). Link bài viết và sản phẩm chưa được đọc ở bước trích skill. Không dùng tên hiển thị, email, liên hệ, lương (F-006).
 
 1. **Với mỗi repo** (gọi GitHub bằng token server, ADR-0006):
    1. Thông tin repo: `language`, `topics`, nhánh mặc định. Repo trả 404 (đã xóa/thành riêng tư) → bỏ qua repo này, ghi nhận là nguồn hỏng.
@@ -224,7 +225,7 @@ Chuẩn hóa tên (`normalize`) giống `skills.name_normalized`: bỏ khoảng 
    3. Cây thư mục gốc của nhánh mặc định → danh sách file ở gốc.
    4. Với file khai báo thư viện có mặt ở gốc (`pubspec.yaml`, `package.json`, `requirements.txt`, `pyproject.toml`, `build.gradle`, `build.gradle.kts`, `go.mod`, `Cargo.toml`, `composer.json`, `Gemfile`, `pom.xml`): tải về (≤ 200 KB), lấy **tên** thư viện (không lấy phiên bản).
    5. README (≤ 4.000 ký tự đầu) → văn bản để dò từ khóa.
-2. **Với mỗi link:** tải trang (chỉ `http/https`, chặn IP nội bộ, ≤ 1 MB, ≤ 10 giây, ≤ 3 lần chuyển hướng — TECH_DESIGN § 5.3); bỏ thẻ `script`/`style`/HTML; lấy ≤ 4.000 ký tự văn bản đầu. Không tải được → nguồn hỏng.
+2. **Với mỗi link bài viết hoặc sản phẩm:** bản này chưa tải trang link. Link người dùng tự thêm vẫn hiện trên hồ sơ, nhưng không được đọc để gợi ý skill và không nâng mức tin cậy. Việc tải trang, kèm chặn địa chỉ nội bộ, để sau.
 3. **Khớp dấu hiệu** (mỗi nguồn riêng):
    - ngôn ngữ ∈ `signals.languages` → `language:<tên>`;
    - tên thư viện ∈ `signals.dependencies.<hệ>` → `dependency:<hệ>:<tên>`;
@@ -278,3 +279,47 @@ Chuẩn hóa tên (`normalize`) giống `skills.name_normalized`: bỏ khoảng 
 |---|---|---|
 | 0.1 | 2026-10-22 | Bản nháp đầu |
 | 1.0 | 2026-10-22 | Đã thống nhất v1.0 |
+| Nháp | 2026-10-28 | Thêm ALG-10 cho ô chat | Chờ xác nhận F-025 |
+
+## ALG-10 · Hỏi ô chat (F-025, nháp)
+
+**Nơi chạy:** Edge Function `chat-ask`, trên cùng máy với server local. Điện thoại không gọi Ollama, Groq hay Z.ai trực tiếp.
+
+**Đầu vào hợp lệ:** người đã đăng nhập, đã đồng ý phân tích, câu hỏi 1–4.000 ký tự sau khi cắt khoảng trắng, chưa quá hạn mức tháng. Thiếu một điều thì không gọi agent.
+
+**Gói gửi cho agent**, ghép trong bộ nhớ rồi bỏ, không ghi log:
+
+1. Câu người dùng vừa gõ.
+2. Tên skill trên hồ sơ và mức tin cậy. Không có tên hiển thị, email, cách liên hệ, lương.
+3. Nếu câu vừa gõ có dán mô tả tin, lấy đúng đoạn đó. Không lấy lại mô tả tin của lần so sánh cũ, vì lần đó không lưu nội dung tin.
+4. Với mỗi repo đã chọn, tối đa 10: tên repo, tên file ở thư mục gốc, tên thư viện, và tối đa 4.000 ký tự đầu của file giới thiệu công khai. Đọc lại từ GitHub lúc gửi. Repo riêng tư không đọc.
+
+**Nguyên tắc đưa vào đầu câu hỏi**, không phải dữ liệu người dùng:
+
+- Chỉ đề xuất. Không nói là đã sửa hồ sơ.
+- Không hỏi và không nhắc lương, email, số điện thoại, liên hệ.
+- Không bịa số lương.
+- Không chắc thì nói một câu ngắn.
+- Mỗi đề xuất là một mục để người dùng Nhận hoặc Bỏ.
+
+**Thứ tự gọi:**
+
+1. Ollama tại `http://127.0.0.1:11434`. Không mở, hết giờ, hoặc không có model thì bỏ qua. Chữ không rời máy.
+2. Groq, gói miễn phí, model ghi trong cấu hình trên máy. Lỗi hoặc hết lượt thì bỏ qua.
+3. Z.ai, chỉ tên model `glm-4.7-flash`. Không gọi model khác.
+4. Cả ba thất bại: không tạo câu của agent. App hiện "Không trả lời được, thử lại". Lượt này không tính vào hạn mức.
+
+Hạn mức mặc định 30 câu của người dùng mỗi tháng, theo giờ Việt Nam. Đổi được trong `app_settings`. Câu lỗi không tính. [GIẢ ĐỊNH A-031]
+
+**Kết quả thành công:** lưu câu của người dùng, câu của agent, tên bên đã trả lời, và các đề xuất ở trạng thái chờ. Người dùng bấm Nhận thì thêm skill nếu chưa có. Bấm Bỏ chỉ đổi trạng thái. Không bấm lần thứ hai. Sau mỗi lần bấm, máy nhà dựng lại model `atom-local` từ các lần đã chọn. Dữ liệu học không rời máy. Nếu máy nhà tắt, lần bấm vẫn được lưu.
+
+**Test mẫu:**
+
+| # | Đầu vào | Kết quả mong đợi |
+|---|---|---|
+| 1 | Ollama trả lời được | Không có lời gọi Groq hay Z.ai |
+| 2 | Ollama tắt, Groq trả lời | Dùng Groq, không gọi Z.ai |
+| 3 | Ollama tắt, Groq lỗi, Z.ai trả lời | Dùng GLM-4.7-Flash |
+| 4 | Cả ba lỗi | Một câu lỗi, không trừ lượt, hồ sơ không đổi |
+| 5 | Gói gửi đi | Có tên skill và repo đã chọn; không có lương, email, liên hệ |
+| 6 | Bấm Bỏ | Đề xuất thành `rejected`, không có skill mới |

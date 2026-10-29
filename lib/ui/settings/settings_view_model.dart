@@ -21,4 +21,22 @@ class SettingsViewModel extends ChangeNotifier {
     if (result is Error<void>) failure = result.failure;
     notifyListeners();
   }
+
+  Future<bool> deleteAccount() async {
+    if (running) return false;
+    running = true;
+    failure = null;
+    notifyListeners();
+    final result = await _authRepository.deleteAccount();
+    if (result is Error<void>) {
+      running = false;
+      failure = result.failure;
+      notifyListeners();
+      return false;
+    }
+    await _authRepository.signOut();
+    running = false;
+    notifyListeners();
+    return true;
+  }
 }

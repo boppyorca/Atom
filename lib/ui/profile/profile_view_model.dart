@@ -31,4 +31,31 @@ class ProfileViewModel extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<bool> setPublic(bool isPublic) async {
+    final current = profile;
+    if (current == null) return false;
+    final result = await _repository.setProfileVisibility(isPublic);
+    if (result is Error<void>) {
+      failure = result.failure;
+      notifyListeners();
+      return false;
+    }
+    profile = Profile(
+      id: current.id,
+      displayName: current.displayName,
+      bio: current.bio,
+      cityId: current.cityId,
+      seniority: current.seniority,
+      contactType: current.contactType,
+      contactValue: current.contactValue,
+      contactVisible: current.contactVisible,
+      visibility: isPublic
+          ? ProfileVisibility.public
+          : ProfileVisibility.private,
+    );
+    failure = null;
+    notifyListeners();
+    return true;
+  }
 }

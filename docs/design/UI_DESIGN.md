@@ -25,6 +25,7 @@
 | S-17 | Người đã chặn | `/settings/blocked` | F-013 |
 | S-18 | Xóa tài khoản | `/settings/delete-account` | F-002 |
 | W-01 | Trang hồ sơ công khai (web, ADR-0007) | `https://<host>/p/?id=<id>` | F-011 |
+| S-19 | Ô chat (nháp, chờ xác nhận) | `/profile/chat` | F-025 |
 
 ## 2. Luồng điều hướng
 
@@ -420,3 +421,28 @@ Dùng `TextTheme` mặc định Material 3 và phông hệ thống (San Francisc
 |---|---|---|
 | 0.1 | 2026-10-22 | Bản nháp đầu |
 | 1.0 | 2026-10-22 | Đã thống nhất v1.0 |
+| Nháp | 2026-10-28 | Thêm S-19 ô chat | Chờ xác nhận F-025 |
+
+## 8. S-19 Ô chat (nháp)
+
+Vào từ Hồ sơ, dòng "Hỏi Atom". Chưa đồng ý phân tích thì mở S-08 trước.
+
+```
+┌──────────────────────────────┐
+│ ←  Hỏi Atom                  │
+│ Đang hỏi máy nhà             │
+│                              │
+│ Minh                         │
+│  Mình còn thiếu gì?          │
+│ Atom                         │
+│  Bạn đã có Flutter.          │
+│  ┌ CI/CD                    │
+│  │ Thêm một bước kiểm tra.  │
+│  │ [Bỏ]            [Nhận]   │
+│  └                          │
+│ [ Viết câu hỏi __________ ] │
+│ [ Gửi ]                      │
+└──────────────────────────────┘
+```
+
+Dòng trạng thái đổi theo bên đang trả lời: "Đang hỏi máy nhà", "Đang hỏi Groq", "Đang hỏi Z.ai". Thất bại: "Không trả lời được, thử lại" và nút Thử lại. Ô trống lúc chưa có câu: "Hỏi về skill hoặc dán một tin tuyển dụng". Nút Gửi tắt khi ô trống. Đang gửi thì nút Gửi quay, danh sách vẫn cuộn được. Nhận và Bỏ cao ít nhất 48 dp, có chữ tiếng Việt và tiếng Anh. Đề xuất đã duyệt không hiện hai nút nữa, chỉ còn chữ "Đã nhận" hoặc "Đã bỏ".

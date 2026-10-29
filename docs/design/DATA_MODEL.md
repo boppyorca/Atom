@@ -418,3 +418,57 @@ Kiểm RLS bằng pgTAP trong `supabase/tests/` (xem [TRACEABILITY.md](TRACEABIL
 |---|---|---|
 | 0.1 | 2026-10-22 | Bản nháp đầu |
 | 1.0 | 2026-10-22 | Đã thống nhất v1.0 |
+| Nháp | 2026-10-28 | Thêm mục 8 cho ô chat. Chưa có migration | Chờ xác nhận F-025 |
+
+## 8. Nháp: ô chat (F-025, chờ xác nhận)
+
+Chưa có bảng thật. Chỉ thêm sau khi chủ dự án xác nhận biên bản, mục 11.
+
+```mermaid
+erDiagram
+    profiles ||--o{ chat_threads : "so huu"
+    chat_threads ||--o{ chat_messages : "chua"
+    chat_messages ||--o{ chat_proposals : "de xuat"
+    profiles ||--o{ chat_proposals : "duyet"
+```
+
+### `chat_threads`
+
+| Cột | Kiểu | Ràng buộc |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `profile_id` | `uuid` | FK `profiles(id)` cascade, `not null` |
+| `created_at` | `timestamptz` | |
+| `updated_at` | `timestamptz` | |
+
+Một người có thể có nhiều cuộc. Bản đầu app mở cuộc mới nhất.
+
+### `chat_messages`
+
+| Cột | Kiểu | Ràng buộc |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `thread_id` | `uuid` | FK `chat_threads(id)` cascade, `not null` |
+| `profile_id` | `uuid` | FK `profiles(id)` cascade, `not null` |
+| `role` | `text` | `user` hoặc `assistant` |
+| `body` | `text` | `not null`, 1–4.000 ký tự |
+| `provider` | `text` | `ollama`, `groq`, `zai`, hoặc rỗng với câu của người dùng |
+| `created_at` | `timestamptz` | |
+
+Không lưu đoạn repo, mô tả tin, lương, email, cách liên hệ vào bảng này. Những phần đó chỉ ghép lúc gửi, rồi bỏ.
+
+### `chat_proposals`
+
+| Cột | Kiểu | Ràng buộc |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `message_id` | `uuid` | FK `chat_messages(id)` cascade, `not null` |
+| `profile_id` | `uuid` | FK `profiles(id)` cascade, `not null` |
+| `title` | `text` | 1–200 ký tự, tên đề xuất |
+| `detail` | `text` | tối đa 500 ký tự |
+| `status` | `suggestion_status` | `pending`, `accepted`, `rejected` |
+| `reviewed_at` | `timestamptz` | |
+
+Bấm Nhận hoặc Bỏ ghi vào đây. Đó là dữ liệu để train sau. Bản này không có bảng train và không có cột chi phí.
+
+RLS: chủ được đọc cuộc, tin nhắn và đề xuất của mình. Người khác và khách không đọc được. Chủ được thêm câu của mình và đổi trạng thái đề xuất của mình. Câu của agent chỉ phần chạy trên server được ghi. Xóa tài khoản xóa cả ba bảng theo cascade.
