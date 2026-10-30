@@ -9,18 +9,30 @@ String effectiveJobStatus({
   return status;
 }
 
+bool historyWasCutShort(Object? metrics) {
+  if (metrics is! Map) return false;
+  for (final value in metrics.values) {
+    if (value is Map && value['scan_truncated'] == true) return true;
+  }
+  return false;
+}
+
 class SkillSuggestion {
   const SkillSuggestion({
     required this.id,
     required this.name,
     required this.sources,
     this.because = '',
+    this.verifiability = '',
+    this.historyPartial = false,
   });
 
   final String id;
   final String name;
   final List<String> sources;
   final String because;
+  final String verifiability;
+  final bool historyPartial;
 }
 
 class AnalysisJob {

@@ -25,6 +25,7 @@ export type SourceSnapshot = {
 }
 
 export type Suggestion = {
+  ruleId: string
   name: string
   evidenceIds: string[]
   signals: string[]
@@ -57,6 +58,27 @@ export function parsePubspec(yaml: string): string[] {
     if (match) names.push(match[1])
   }
   return names
+}
+
+// Reads dependency names only. Scripts and any other text are ignored.
+export function parsePackageJson(text: string): string[] {
+  try {
+    const data = JSON.parse(text) as {
+      dependencies?: Record<string, unknown>
+      devDependencies?: Record<string, unknown>
+    }
+    const names = [
+      ...Object.keys(data?.dependencies ?? {}),
+      ...Object.keys(data?.devDependencies ?? {}),
+    ]
+    return names.filter((name) => name.length > 0 && name.length <= 200 && /^[@A-Za-z0-9._/-]+$/.test(name))
+  } catch {
+    return []
+  }
+}
+
+export function catalogIdFor(ruleId: string, catalogIds: ReadonlySet<string>): string | null {
+  return catalogIds.has(ruleId) ? ruleId : null
 }
 
 function wholeWord(text: string, word: string, sensitive: boolean): boolean {
@@ -129,6 +151,7 @@ export function extractSuggestions(input: {
       const strong = signals.filter((signal) => !(signal.startsWith('keyword:') && signal.slice('keyword:'.length).length < 3))
       if (strong.length === 0) continue
       const current = found.get(skill.id) ?? {
+        ruleId: skill.id,
         name: skill.name,
         evidenceIds: [],
         signals: [],

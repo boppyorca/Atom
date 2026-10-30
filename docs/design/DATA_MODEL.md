@@ -304,9 +304,12 @@ Partial unique index `(profile_id, kind) where status in ('queued','running')` �
 | `signals` | `text[]` | `not null`, ≥ 1 phần tử, ví dụ `{"dependency:pub:provider","language:Dart"}` — dấu hiệu đã dùng (ALG-08) |
 | `status` | `suggestion_status` | `not null default 'pending'` |
 | `reviewed_at` | `timestamptz` | |
+| `catalog_id` | `text` | FK `skill_catalog(id)`, khóa của quy tắc, không phải chữ hiển thị |
+| `commit_metrics` | `jsonb` | số đã đếm trong cửa sổ quét; `scan_truncated` nghĩa là chưa phải tổng |
 
 Chỉ mục: `(profile_id, status)`. Duyệt qua RPC `review_suggestion` (ALG-03).
 `signals` + `status` là dữ liệu để đo độ chính xác từng quy tắc và để huấn luyện bộ phân loại về sau (ADR-0010).
+`skill_catalog.verifiability` nhận `file`, `package` hoặc `unverifiable`. Giá trị cuối nghĩa là commit không kiểm được skill đó.
 
 ### 4.10 `salary_roles`, `cities` — danh sách cố định (F-015, F-003, A-008)
 

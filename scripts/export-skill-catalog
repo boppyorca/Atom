@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+"""Write knowledge/_generated/skill-catalog.md from the local database. Run only when asked."""
+
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / "knowledge/_generated/skill-catalog.md"
+QUERY = (
+    "select id, name, coalesce(array_to_string(aliases, ', '), ''), verifiability "
+    "from public.skill_catalog order by name"
+)
+
+
+def main():
+    url = os.environ.get(
+        "ATOM_LOCAL_DB_URL",
+        "postgresql://postgres:postgres@127.0.0.1:54322/postgres",
+    )
+    result = subprocess.run(
+        ["psql", url, "-At", "-F", "|", "-c", QUERY],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        sys.stderr.write(result.stderr)
+        return result.returncode
+    lines = [
+        "# Danh mục skill",
+        "",
+        "Xuất từ bảng `skill_catalog`. Đừng sửa tay.",
+        "",
+        "| id | name | aliases | verifiability |",
+        "|---|---|---|---|",
+    ]
+    count = 0
+    for row in result.stdout.splitlines():
+        if not row.strip():
+            continue
+        cells = [cell.replace("|", "/") for cell in row.split("|")]
+        if len(cells) != 4:
+            sys.stderr.write(f"dòng lạ: {row}\n")
+            return 1
+        lines.append("| " + " | ".join(cells) + " |")
+        count += 1
+    if count == 0:
+        sys.stderr.write("bảng skill_catalog trống\n")
+        return 1
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"wrote {count} skills to {OUT}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

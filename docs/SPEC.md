@@ -39,3 +39,15 @@ Mạng xã hội, phỏng vấn thử, thông báo đẩy (Should); Figma/Behanc
 Chưa thuộc phạm vi bản đã chốt. Không được viết code cho phần này trước khi chủ dự án xác nhận mục 11 của [REQUIREMENTS_AGREEMENT.md](REQUIREMENTS_AGREEMENT.md).
 
 Yêu cầu chức năng: F-025 trong [FEATURES.md](FEATURES.md). Yêu cầu phi chức năng: NFR-14 đến NFR-16 trong [TECH_DESIGN.md](design/TECH_DESIGN.md). Dữ liệu: mục 8 của [DATA_MODEL.md](design/DATA_MODEL.md). Giải thuật: ALG-10 trong [ALGORITHMS.md](design/ALGORITHMS.md). Giao diện: S-19 trong [UI_DESIGN.md](design/UI_DESIGN.md).
+
+Ô chat cũ không đổi. Nó vẫn lưu hội thoại trong tài khoản, vẫn có thể chuyển sang Groq hoặc Z.ai khi máy nhà không trả lời, và vẫn giới hạn 30 câu mỗi tháng.
+
+## Phụ lục: chatbot hỏi tài liệu (ADR-0012, 2026-10-30)
+
+Đây là cửa thứ hai, không thay ô chat cũ. Quyết định: [ADR-0012](adr/0012-public-knowledge-chatbot.md).
+
+Hai bot không dùng chung quy tắc dữ liệu. Ô chat cũ có thể gửi chữ ra Groq hoặc Z.ai và lưu cuộc trò chuyện. Chatbot tài liệu chỉ chạy trên máy của tác giả, không lưu câu hỏi hay câu trả lời, trừ khi người dùng tự gửi câu đó cho tác giả (F-027), và không biết hồ sơ người dùng. Khi có màn hình, chữ trên màn phải nói rõ người dùng đang hỏi bot nào.
+
+- Hỏi đáp từ tài liệu công khai: F-026.
+- Thích hoặc không thích một câu trả lời, và tùy chọn gửi câu đó cho tác giả: F-027.
+- Câu đồng ý riêng `doc_chat` trước lần hỏi đầu: F-028.

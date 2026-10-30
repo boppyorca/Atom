@@ -1,8 +1,8 @@
 import { createClient, type SupabaseClient } from 'jsr:@supabase/supabase-js@2'
 import dictionary from '../_shared/skill_dictionary.json' with { type: 'json' }
-import { gateStatus, type DictionarySkill } from '../_shared/extract.ts'
+import { catalogIdFor, gateStatus, type DictionarySkill } from '../_shared/extract.ts'
 import { blockedNamesForRepos, suggestionsFromRepos } from '../_shared/read_repo.ts'
-import { loadRepoCommitScore, type SkillPathRule } from '../_shared/commit_signals.ts'
+import { commitScanBudget, loadRepoCommitScore, type SkillPathRule } from '../_shared/commit_signals.ts'
 
 const skills = dictionary as unknown as DictionarySkill[]
 
@@ -59,6 +59,16 @@ export async function finishExtract(
       .eq('profile_id', profileId)
       .maybeSingle()
     const login = connection?.github_username as string | undefined
+    const { data: catalogRows, error: catalogError } = await admin.from('skill_catalog').select('id')
+    if (catalogError) {
+      await fail('INTERNAL')
+      return
+    }
+    const catalogIds = new Set((catalogRows ?? []).map((row) => String(row.id)))
+    if (skills.some((skill) => catalogIdFor(skill.id, catalogIds) == null)) {
+      await fail('INTERNAL')
+      return
+    }
     const rules: SkillPathRule[] = skills.map((skill) => ({
       name: skill.name,
       extensions: skill.signals.extensions ?? [],
@@ -72,8 +82,15 @@ export async function finishExtract(
       last_commit_at: string
       skill_names: string[]
       org_repo: boolean
+      scan_truncated: boolean
+      listed_commit_count: number
     }> = {}
+    const budget = { used: 0, maxCalls: commitScanBudget.maxCalls }
     if (login) {
+      if (repos.length > commitScanBudget.maxRepos) {
+        await fail('RATE_LIMITED')
+        return
+      }
       for (const repo of repos) {
         const deps = new Set<string>()
         const score = await loadRepoCommitScore({
@@ -83,6 +100,7 @@ export async function finishExtract(
           login,
           skills: rules,
           repoDependencies: [...deps],
+          budget,
         })
         if (typeof score === 'string') {
           await fail(score)
@@ -96,6 +114,8 @@ export async function finishExtract(
             last_commit_at: score.lastCommitAt,
             skill_names: score.skillNames,
             org_repo: score.orgRepo,
+            scan_truncated: score.scanTruncated,
+            listed_commit_count: score.listedCommitCount,
           }
         }
       }
@@ -143,7 +163,8 @@ export async function finishExtract(
           evidence_ids: suggestion.evidenceIds,
           signals: suggestion.signals,
           signal_types: suggestion.signalTypes,
-          origin: 'catalog',
+          catalog_id: catalogIdFor(suggestion.ruleId, catalogIds),
+          origin: catalogIdFor(suggestion.ruleId, catalogIds) ? 'catalog' : 'new_skill',
           commit_metrics: Object.fromEntries(
             repos
               .filter((repo) => suggestion.evidenceIds.includes(repo.evidenceId))

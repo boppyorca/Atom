@@ -15,7 +15,9 @@
 | Skill đề xuất | `SkillSuggestion` | Skill do AI trích ra, chờ người dùng duyệt |
 | Duyệt skill | `reviewSuggestion` | Người dùng giữ hoặc bỏ skill đề xuất |
 | Xác nhận skill | `Endorsement` | Một người dùng xác nhận skill của người khác |
-| Đồng ý dùng AI | `AiConsent` | Sự đồng ý riêng trước khi gửi dữ liệu cho AI |
+| Đồng ý dùng AI | `AiConsent` | Sự đồng ý riêng trước khi gửi dữ liệu cho AI. Loại `doc_chat` là câu đồng ý riêng cho chatbot hỏi tài liệu, chưa có cột trong bảng |
+| Tài liệu tri thức | `KnowledgeDoc` | Một file Markdown trong thư mục `knowledge/`. Chỉ bản đã duyệt mới được đưa vào kho tìm |
+| Có nguồn | `Grounded` | Câu trả lời đủ đoạn tài liệu đã duyệt. Sai thì người dùng chỉ thấy câu từ chối cố định |
 | Phân tích khoảng cách skill | `SkillGapAnalysis` | So hồ sơ với mô tả job mục tiêu |
 | Mô tả job | `JobDescription` | Văn bản job mục tiêu người dùng dán vào |
 | Khoản lương | `SalaryEntry` | Một khoản lương ẩn danh do người dùng góp |

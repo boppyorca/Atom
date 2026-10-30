@@ -1,0 +1,239 @@
+#!/usr/bin/env python3
+"""Check knowledge/ markdown. Errors exit 1. Warnings stay on stdout and exit 0."""
+
+import argparse
+import re
+import sys
+from datetime import date, datetime
+from pathlib import Path
+from urllib.error import URLError
+from urllib.request import Request, urlopen
+
+ROOT = Path(__file__).resolve().parents[1]
+CONTENT_DIRS = {"app-guide", "roadmap", "language", "foundation", "faq"}
+TYPES = CONTENT_DIRS
+STATUSES = {"draft", "reviewed"}
+SKIP_DIR_PREFIX = "_"
+EMAIL = re.compile(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
+PHONE = re.compile(r"(?<!\d)(?:\+84\d{9,11}|0\d{9,10})(?!\d)")
+TOKEN = re.compile(
+    r"(?:sk-|ghp_|github_pat_|AKIA|xoxb-)[A-Za-z0-9]{10,}|Bearer\s+[A-Za-z0-9._\-]{20,}",
+    re.I,
+)
+ABS_PATH = re.compile(r"/Users/|/home/|[A-Za-z]:\\Users\\|C:/Users/", re.I)
+LINK = re.compile(r"\[([^\]]*)\]\(([^)]*)\)")
+THRESHOLD = re.compile(r"\b5\s*commit|\b200\s*dòng|\b14\s*ngày", re.I)
+SENTENCE = re.compile(r"[^.!?\n]{80,}[.!?]")
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", type=Path, default=ROOT / "knowledge")
+    parser.add_argument("--catalog", type=Path, default=ROOT / "knowledge/_generated/skill-catalog.md")
+    parser.add_argument("--links", action="store_true", help="check live http links; not part of make check")
+    args = parser.parse_args(argv)
+    findings = lint(args.root, args.catalog, check_links=args.links)
+    for kind, code, where, detail in findings:
+        print(f"{kind} {code} {where}: {detail}")
+    errors = [item for item in findings if item[0] == "ERROR"]
+    return 1 if errors else 0
+
+
+def lint(root, catalog_path, check_links=False):
+    findings = []
+    keys = load_catalog(catalog_path)
+    if keys is None:
+        findings.append(("ERROR", "missing-catalog", str(catalog_path), "không đọc được danh mục"))
+        keys = set()
+    docs = []
+    for path in sorted(root.rglob("*.md")):
+        if path.name == "README.md" or any(part.startswith(SKIP_DIR_PREFIX) for part in path.relative_to(root).parts):
+            continue
+        docs.append(path)
+    seen = {}
+    bodies = []
+    for path in docs:
+        text = path.read_text(encoding="utf-8")
+        meta, body = split_frontmatter(text)
+        rel = str(path.relative_to(root))
+        if meta is None:
+            findings.append(("ERROR", "missing-metadata", rel, "thiếu khối metadata"))
+            continue
+        findings.extend(check_meta(meta, path, rel, seen))
+        findings.extend(check_skills(meta.get("skills") or [], keys, rel))
+        words = len(body.split())
+        if words < 150 or words > 1500:
+            findings.append(("WARN", "length", rel, f"{words} từ"))
+        findings.extend(check_secrets(text, rel))
+        updated = meta.get("updated")
+        if isinstance(updated, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", updated):
+            age = (date.today() - datetime.strptime(updated, "%Y-%m-%d").date()).days
+            if age > 180:
+                findings.append(("WARN", "stale", rel, f"{age} ngày"))
+        if meta.get("type") == "app-guide" and THRESHOLD.search(body):
+            findings.append(("ERROR", "threshold", rel, "có ngưỡng evidenced"))
+        if meta.get("status") == "draft" and path.parent.name in CONTENT_DIRS:
+            findings.append(("WARN", "draft", rel, "bản nháp trong thư mục sẽ đồng bộ"))
+        findings.extend(check_link_syntax(body, rel))
+        if check_links:
+            findings.extend(check_live_links(body, rel))
+        bodies.append((rel, body))
+    findings.extend(duplicate_sentences(bodies))
+    return findings
+
+
+def split_frontmatter(text):
+    if not text.startswith("---\n"):
+        return None, text
+    end = text.find("\n---", 4)
+    if end < 0:
+        return None, text
+    return parse_meta(text[4:end]), text[end + 4 :]
+
+
+def parse_meta(raw):
+    meta = {}
+    lines = raw.splitlines()
+    index = 0
+    while index < len(lines):
+        line = lines[index]
+        if not line.strip() or line.startswith(" "):
+            index += 1
+            continue
+        name, value = split_pair(line.strip())
+        if value in ("", "[]"):
+            items = []
+            index += 1
+            while index < len(lines) and lines[index].startswith("  - "):
+                payload = lines[index][4:].strip()
+                if payload.startswith("name:"):
+                    item = {}
+                    key, val = split_pair(payload)
+                    item[key] = unquote(val)
+                    index += 1
+                    while index < len(lines) and lines[index].startswith("    "):
+                        key, val = split_pair(lines[index].strip())
+                        item[key] = unquote(val)
+                        index += 1
+                    items.append(item)
+                else:
+                    items.append(unquote(payload))
+                    index += 1
+            meta[name] = items
+            continue
+        meta[name] = unquote(value)
+        index += 1
+    return meta
+
+
+def split_pair(text):
+    name, _, value = text.partition(":")
+    return name.strip(), value.strip()
+
+
+def unquote(value):
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+        return value[1:-1]
+    return value
+
+
+def norm(value):
+    return re.sub(r"\s+", " ", value.strip().lower())
+
+
+def load_catalog(path):
+    if not path.is_file():
+        return None
+    keys = set()
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.startswith("|") or line.startswith("| id") or line.startswith("|---") or line.startswith("| --"):
+            continue
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if len(cells) < 3:
+            continue
+        keys.add(norm(cells[0]))
+        keys.add(norm(cells[1]))
+        for alias in cells[2].split(","):
+            if alias.strip():
+                keys.add(norm(alias))
+    return keys
+
+
+def check_meta(meta, path, rel, seen):
+    findings = []
+    required = ["id", "title", "type", "skills", "updated", "sources", "status"]
+    if any(name not in meta or meta[name] in ("", None, []) for name in required if name not in ("skills",)):
+        findings.append(("ERROR", "missing-metadata", rel, "thiếu trường"))
+    if not isinstance(meta.get("skills"), list):
+        findings.append(("ERROR", "missing-metadata", rel, "skills phải là danh sách"))
+    if meta.get("type") not in TYPES:
+        findings.append(("ERROR", "missing-metadata", rel, "type không hợp lệ"))
+    if meta.get("status") not in STATUSES:
+        findings.append(("ERROR", "missing-metadata", rel, "status không hợp lệ"))
+    updated = meta.get("updated")
+    if not isinstance(updated, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", updated):
+        findings.append(("ERROR", "missing-metadata", rel, "updated sai dạng"))
+    doc_id = meta.get("id")
+    if isinstance(doc_id, str):
+        if doc_id in seen:
+            findings.append(("ERROR", "duplicate-id", rel, doc_id))
+        seen[doc_id] = rel
+        if path.stem != doc_id:
+            findings.append(("ERROR", "id-filename", rel, doc_id))
+    return findings
+
+
+def check_skills(skills, keys, rel):
+    findings = []
+    for skill in skills:
+        if norm(str(skill)) not in keys:
+            findings.append(("ERROR", "unknown-skill", rel, str(skill)))
+    return findings
+
+
+def check_secrets(text, rel):
+    findings = []
+    if EMAIL.search(text) or PHONE.search(text) or TOKEN.search(text) or ABS_PATH.search(text):
+        findings.append(("ERROR", "secret", rel, "có email, số điện thoại, khóa hoặc đường dẫn máy"))
+    return findings
+
+
+def check_link_syntax(body, rel):
+    findings = []
+    for match in LINK.finditer(body):
+        url = match.group(2).strip()
+        if not url or re.search(r"\s", url) or not re.match(r"(https?://|mailto:|\./|\.\./)", url):
+            findings.append(("ERROR", "link", rel, url or "(trống)"))
+    return findings
+
+
+def check_live_links(body, rel):
+    findings = []
+    for match in LINK.finditer(body):
+        url = match.group(2).strip()
+        if not url.startswith("http"):
+            continue
+        try:
+            urlopen(Request(url, method="HEAD"), timeout=5)
+        except URLError as error:
+            findings.append(("ERROR", "dead-link", rel, f"{url} {error}"))
+    return findings
+
+
+def duplicate_sentences(bodies):
+    found = {}
+    findings = []
+    reported = set()
+    for rel, body in bodies:
+        for sentence in SENTENCE.findall(body):
+            key = re.sub(r"\s+", " ", sentence.strip())
+            other = found.get(key)
+            if other and (other, rel, key) not in reported:
+                findings.append(("WARN", "duplicate-sentence", rel, other))
+                reported.add((other, rel, key))
+            found.setdefault(key, rel)
+    return findings
+
+
+if __name__ == "__main__":
+    sys.exit(main())

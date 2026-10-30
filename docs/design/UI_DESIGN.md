@@ -25,7 +25,7 @@
 | S-17 | Người đã chặn | `/settings/blocked` | F-013 |
 | S-18 | Xóa tài khoản | `/settings/delete-account` | F-002 |
 | W-01 | Trang hồ sơ công khai (web, ADR-0007) | `https://<host>/p/?id=<id>` | F-011 |
-| S-19 | Ô chat (nháp, chờ xác nhận) | `/profile/chat` | F-025 |
+| S-19 | Ô chat (đã có màn trong code) | `/profile/chat` | F-025 |
 
 ## 2. Luồng điều hướng
 
@@ -422,8 +422,9 @@ Dùng `TextTheme` mặc định Material 3 và phông hệ thống (San Francisc
 | 0.1 | 2026-10-22 | Bản nháp đầu |
 | 1.0 | 2026-10-22 | Đã thống nhất v1.0 |
 | Nháp | 2026-10-28 | Thêm S-19 ô chat | Chờ xác nhận F-025 |
+| Ghi nhận code | 2026-10-30 | S-19 đã có màn `ChatScreen` và đường `/profile/chat`. F-025 trong FEATURES vẫn là Draft. Ticket 19 trạng thái claimed | |
 
-## 8. S-19 Ô chat (nháp)
+## 8. S-19 Ô chat (đã có màn trong code)
 
 Vào từ Hồ sơ, dòng "Hỏi Atom". Chưa đồng ý phân tích thì mở S-08 trước.
 

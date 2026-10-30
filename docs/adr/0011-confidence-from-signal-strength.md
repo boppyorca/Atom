@@ -20,6 +20,20 @@ Mức `evidenced` trước đây chỉ cần một dòng trong `skill_evidence`.
 
 Gắn link bài viết không tự nâng mức. Hàm không ghi đè dòng đang là `endorsed`.
 
+## Bổ sung 2026-10-29
+
+Một lượt đọc commit lấy trang danh sách tối đa 100 commit của login đã lưu. Ngày và số trên trang đó là cửa sổ đã xem, không phải tổng đời repo. Cờ `scan_truncated` ghi khi trang đầy, khi dừng sớm, hoặc khi chưa mở hết commit. Giao diện không hiện các số đó như tổng số commit.
+
+Commit cũ nhất thêm hơn 1000 dòng chỉ bị bỏ khi lần quét chạm gốc lịch sử. Quét bị cắt thì commit cũ nhất nhìn thấy chưa chắc là commit đầu, nên không bỏ.
+
+Một lượt chạy tối đa 10 repo và 240 lời gọi. Hết ngân sách, hoặc GitHub trả về hết hạn mức, là lỗi `RATE_LIMITED`. Lỗi đó khác với GitHub không trả lời.
+
+Chỉ đọc file khai báo ở thư mục gốc, và chỉ hai file có tên gói trong 13 quy tắc: `pubspec.yaml` (Flutter, Provider) và `package.json` (React). File được đọc như dữ liệu, chỉ lấy tên gói, tối đa 200 KB, hết giờ sau 8 giây. Thư mục con không được đọc. Các file `requirements.txt`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `pom.xml`, `build.gradle`, `Gemfile`, `composer.json`, `*.csproj` không được mở vì 13 quy tắc không có tên gói tương ứng.
+
+Gợi ý đối với danh mục bằng khóa `catalog_id`, không bằng chữ hiển thị. Thiếu khóa thì lượt quét báo lỗi, không gắn nhầm `new_skill`. Tên và tên gọi khác, sau khi chuẩn hóa, không được trùng nhau. Go, C, R, Java với JavaScript, React với React Native đã được soát: mỗi khóa chỉ thuộc một skill.
+
+Cột `verifiability` nói skill kiểm được bằng file, bằng gói, hay không kiểm được bằng mã nguồn. Hơn 100 tên trong danh mục không kiểm được bằng commit. Điều đó được hiện trên màn gợi ý.
+
 ## Hệ quả
 
-Migration mới `20261029180000_evidence_strength.sql`. Không sửa các migration cũ. Chưa áp dụng lên database local trong lượt viết file này.
+Migration mới `20261029180000_evidence_strength.sql` và `20261029220000_catalog_resolve.sql`. Không sửa các migration cũ.

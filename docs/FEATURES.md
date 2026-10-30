@@ -248,3 +248,36 @@ Chưa thuộc bản đã chốt. Chỉ có hiệu lực sau khi chủ dự án x
   - [ ] Khóa Groq và Z.ai chỉ nằm trong file môi trường trên máy chủ dự án, không nằm trong app, không ghi vào git.
 - **Phụ thuộc:** F-001, F-006, F-007, F-014
 - **Trạng thái:** Draft, chờ xác nhận
+
+## Chatbot hỏi tài liệu (ADR-0012, đề xuất 2026-10-30)
+
+Không thay F-025. Ô chat cũ vẫn lưu hội thoại và vẫn có thể sang Groq hoặc Z.ai. Bot này chỉ trả lời từ tài liệu trên máy của tác giả.
+
+### F-026 · Hỏi đáp tri thức công khai
+- **User story:** Là người dùng, tôi muốn hỏi cách dùng Atom và lộ trình học, để được trả lời từ tài liệu đã duyệt, không từ hồ sơ của tôi.
+- **Tiêu chí chấp nhận:**
+  - [ ] Một câu hỏi, một câu trả lời. Bot không nhớ câu trước.
+  - [ ] Câu trả lời về Atom và lộ trình học lấy từ tài liệu. Không có nguồn thì chỉ thấy câu cố định "chưa có thông tin". Chữ không hiện trước khi biết đã có nguồn.
+  - [ ] Không trả lời hồ sơ riêng, lương cụ thể, môn đại học, hay kiến thức ngoài kho.
+  - [ ] Không công cụ, không duyệt web, không chuyển sang Groq hay Z.ai. Máy không chạy thì một câu lỗi và thử lại.
+  - [ ] Câu trả lời bằng tiếng Việt. Chữ nút trên màn hình, khi có màn hình, vẫn có cả tiếng Việt và tiếng Anh.
+- **Phụ thuộc:** F-001, F-028
+- **Trạng thái:** Agreed. Chưa có màn hình, chưa có hàm.
+
+### F-027 · Phản hồi câu trả lời
+- **User story:** Là người dùng, tôi muốn đánh dấu câu trả lời có ích hay không, và chỉ khi tôi chọn thì mới gửi câu đó cho tác giả.
+- **Tiêu chí chấp nhận:**
+  - [ ] Nút thích hoặc không thích chỉ lưu kết quả, không lưu nội dung câu hỏi.
+  - [ ] "Gửi câu hỏi này cho tác giả" mặc định tắt. Nội dung chỉ đi khi người dùng bật cho đúng câu đó.
+  - [ ] Mỗi câu trả lời chỉ gửi phản hồi một lần, và chỉ chủ câu hỏi gửi được.
+- **Phụ thuộc:** F-026
+- **Trạng thái:** Agreed. Chưa có bảng, chưa có hàm.
+
+### F-028 · Đồng ý hỏi tài liệu
+- **User story:** Là người dùng, tôi muốn được hỏi trước khi câu hỏi của tôi vào mô hình chạy trên máy của tác giả.
+- **Tiêu chí chấp nhận:**
+  - [ ] Chưa đồng ý `doc_chat` thì không hỏi được.
+  - [ ] Câu đồng ý nói rõ: câu hỏi được xử lý trên máy của tác giả, không gửi lên dịch vụ chat trên mây.
+  - [ ] Đồng ý này không thay câu đồng ý của ô chat cũ và của việc trích skill.
+- **Phụ thuộc:** F-001
+- **Trạng thái:** Agreed. Chưa có chỗ lưu loại đồng ý này.

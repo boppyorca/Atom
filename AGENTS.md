@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Flutter mobile app "Atom" (iOS 15+, Android 7.0+) with a local Supabase backend.
+Flutter mobile app "Atom" (iOS 15+, Android 7.0+). Supabase can run on this Mac or on the web project the owner named.
 Docs are in Vietnamese; code identifiers are in English. Reply to the owner in Vietnamese, plain language.
 
 ## Read before feature work
@@ -14,7 +14,8 @@ Docs are in Vietnamese; code identifiers are in English. Reply to the owner in V
 
 ## Commands
 
-- `make check` — pub get, format check, analyze, unit/widget tests. CI runs it on every PR.
+- `make check` — kb-lint, eval-chat --dry, pub get, format check, analyze, unit/widget tests. CI runs it on every PR. Không cần Ollama.
+- `make kb-lint` — kiểm tra `knowledge/`. `make eval-chat` — chấm bộ câu. Bản chấm thật chưa gọi được bot cho tới khi có `ask-atom`.
 - `make check-db` — `supabase db reset` + `supabase test db` (needs Docker running).
 - `make check-all` — `check` then `check-db`.
 - `make doctor` — tool versions; `make docs-check` — SPEC/ticket/ADR/link consistency; `make next-ticket` — unblocked tickets.
@@ -23,6 +24,8 @@ Docs are in Vietnamese; code identifiers are in English. Reply to the owner in V
 ## Layout
 
 - `lib/` — app code; `test/` — Flutter tests.
+- `knowledge/` — tài liệu cho chatbot hỏi tài liệu. Không đưa dữ liệu hồ sơ, lương, email hay khóa vào đây. Chỉ file `status: reviewed` mới được đồng bộ vào kho tìm.
+- `eval/` — bộ câu chấm chatbot. `eval/attack-docs/` chỉ để kiểm thử, không đồng bộ.
 - `supabase/config.toml`, `supabase/migrations/`, `supabase/tests/` (pgTAP).
 - `.agents/skills/` — mattpocock/skills (installed via `npx skills`, see `skills-lock.json`).
 - `.cursor/rules/` — always-on agent rules; `.cursor/hooks/` — agent hooks.
@@ -33,7 +36,7 @@ Docs are in Vietnamese; code identifiers are in English. Reply to the owner in V
 
 1. Never modify, delete, or skip tests just to make them pass.
 2. Never read, create, or commit secrets or .env files. Only the Supabase anon key may appear in app config; never the service_role key.
-3. Only use local Supabase. Never run `supabase link` or touch a remote project. Schema changes go through `supabase/migrations`.
+3. Supabase on the web is allowed when the owner asks. The web project ref is `quphatkscppfwxzfkrnx`. Never commit the service_role key or a database password. Schema changes still go through `supabase/migrations`. Copying user data to that web project happens only when the owner asks for that copy.
 4. Run `make check` before reporting a task as done, and report the actual output.
 5. Stop and ask the human before: adding a new package, changing auth/payments/RLS, or editing migrations that already exist.
 6. If the same step fails twice in a row, stop and ask, whatever the cause. Don't work around it.

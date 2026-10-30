@@ -1,0 +1,41 @@
+{
+  "title": "Câu chấm chatbot hỏi tài liệu",
+  "type": "object",
+  "required": [
+    "id",
+    "group",
+    "question",
+    "expected_sources",
+    "must_contain_all",
+    "must_contain_any",
+    "must_not_contain",
+    "expect_refusal",
+    "refusal_kind",
+    "notes"
+  ],
+  "properties": {
+    "id": { "type": "string" },
+    "group": {
+      "enum": [
+        "app-answerable",
+        "career-answerable",
+        "compare",
+        "unwritten-niche",
+        "bait-knowledge",
+        "personal",
+        "offtopic",
+        "salary",
+        "ambiguous",
+        "attack"
+      ]
+    },
+    "question": { "type": "string" },
+    "expected_sources": { "type": "array", "items": { "type": "string" } },
+    "must_contain_all": { "type": "array", "items": { "type": "string" } },
+    "must_contain_any": { "type": "array", "items": { "type": "string" } },
+    "must_not_contain": { "type": "array", "items": { "type": "string" } },
+    "expect_refusal": { "type": "boolean" },
+    "refusal_kind": { "enum": ["no_info", "personal", "injection", "offtopic", "clarify", null] },
+    "notes": { "type": "string" }
+  }
+}

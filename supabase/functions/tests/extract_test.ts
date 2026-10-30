@@ -1,10 +1,12 @@
 import { assertEquals } from 'jsr:@std/assert@1'
 import dictionary from '../_shared/skill_dictionary.json' with { type: 'json' }
 import {
+  catalogIdFor,
   dictionaryProblems,
   extractSuggestions,
   gateStatus,
   jobInput,
+  parsePackageJson,
   parsePubspec,
   type DictionarySkill,
   type SourceSnapshot,
@@ -91,4 +93,19 @@ Deno.test('starting a job never sends personal fields', () => {
   assertEquals(Object.keys(input), ['evidence_ids'])
   assertEquals(gateStatus('CONSENT_REQUIRED'), 403)
   assertEquals(gateStatus('QUOTA_EXCEEDED'), 429)
+})
+
+Deno.test('a rule resolves by its id, not by the display name', () => {
+  const ids = new Set(['go'])
+  assertEquals(catalogIdFor('go', ids), 'go')
+  assertEquals(catalogIdFor('Go', ids), null)
+})
+
+Deno.test('package.json is read as package names only', () => {
+  const names = parsePackageJson(JSON.stringify({
+    scripts: { build: 'echo react && rm -rf /' },
+    dependencies: { react: '^18.0.0' },
+    devDependencies: { typescript: '^5.0.0' },
+  }))
+  assertEquals(names.sort(), ['react', 'typescript'])
 })

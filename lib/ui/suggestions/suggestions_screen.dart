@@ -41,6 +41,13 @@ class SuggestionsScreen extends StatelessWidget {
               Text(suggestion.sources.join(', ')),
             if (suggestion.because.isNotEmpty)
               Text('${l10n.suggestionBecause} ${suggestion.because}'),
+            if (suggestion.verifiability == 'file')
+              Text(l10n.suggestionCheckFile),
+            if (suggestion.verifiability == 'package')
+              Text(l10n.suggestionCheckPackage),
+            if (suggestion.verifiability == 'unverifiable')
+              Text(l10n.suggestionCheckNone),
+            if (suggestion.historyPartial) Text(l10n.suggestionHistoryPartial),
             Row(
               children: [
                 Expanded(

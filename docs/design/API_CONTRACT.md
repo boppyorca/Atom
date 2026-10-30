@@ -184,9 +184,38 @@ Mã ở `supabase/functions/<tên>/index.ts`; dùng chung `_shared/skill_diction
 - **Lỗi:** `CONFIRM_REQUIRED` (400), `UNAUTHORIZED` (401), `INTERNAL` (500, app hiện lỗi + thử lại).
 - **Ví dụ:** `await supabase.functions.invoke('delete-account', body: {'confirm': true});`
 
+### 4.5 `ask-atom` — hỏi tài liệu công khai (F-026, F-028, ADR-0012)
+
+- **Quyền:** người dùng đã đăng nhập (`verify_jwt = true`). Chưa có hàm trong code.
+- **Input:** `{ "question": "…" }`. Chuẩn hóa: cắt khoảng trắng, NFC, bỏ ký tự điều khiển. Sau chuẩn hóa dài 1–300 ký tự.
+- **Thứ tự:**
+  1. JWT không hợp lệ → `401` `UNAUTHENTICATED`.
+  2. Chưa có đồng ý `doc_chat` → `403` `CONSENT_REQUIRED`.
+  3. Câu rỗng hoặc quá dài → `400` `INVALID_QUESTION`.
+  4. Hết trần giờ của người đó → `429` `USAGE_LIMIT`, kèm `retry_after`. Trần chốt sau khi đo.
+  5. Chào, cảm ơn, câu về dữ liệu cá nhân, câu đòi bỏ hướng dẫn hoặc in tài liệu, câu quá mơ hồ → câu mẫu, không gọi model.
+  6. Đang có một việc AI khác → chờ tối đa Q giây, rồi `429` `BUSY`. Q chốt sau khi đo.
+  7. Tìm tài liệu và sinh câu trả lời. Hết giờ → `504` `AI_TIMEOUT`. Máy không chạy → `503` `AI_UNAVAILABLE`.
+  8. Nhả khóa kể cả khi lỗi. Ghi siêu dữ liệu, không ghi nội dung câu hỏi hay câu trả lời, trừ khi người dùng tự gửi theo F-027. Nơi lưu siêu dữ liệu là câu hỏi mở trong ADR-0012, chưa chọn bảng.
+- **Output `200`:** `{ "answer", "grounded", "intent", "sources", "request_id" }`. `intent` là `answer`, `greeting`, `refusal` hoặc `clarify`. Mỗi nguồn có `doc_id`, `title`, và `snippet` tối đa 200 ký tự, chỉ từ tài liệu đã duyệt. `grounded` sai thì `sources` rỗng và `answer` là câu cố định.
+- **Chữ chạy dần:** chưa chọn. Chờ S1. Phương án A: không chạy chữ dần, chờ cả câu, mục tiêu dưới 10 giây. Phương án B: tìm tài liệu trước, lấy `grounded` từ ngưỡng điểm; không đủ điểm thì trả câu cố định và không gọi model; đủ điểm thì mới chạy chữ dần.
+- **Câu cố định, một chỗ khi làm code:** `REFUSE_NO_INFO`, `REFUSE_PERSONAL`, `REFUSE_INJECTION`, `CLARIFY`, `GREETING`, `THANKS`. `REFUSE_NO_INFO` dự kiến là "Mình chưa có thông tin về điều này." Chưa có file test.
+- **Chưa chốt:** Q, thời gian chữ đầu, thời gian cả câu, trần câu mỗi giờ, số đoạn tài liệu lấy ra, ngưỡng giống nhau, độ dài ngữ cảnh.
+- **Ví dụ:** `await supabase.functions.invoke('ask-atom', body: {'question': text});`
+
+### 4.6 `ask-atom-feedback` — thích hoặc gửi câu cho tác giả (F-027, ADR-0012)
+
+- **Quyền:** người dùng đã đăng nhập. Chỉ chủ của `request_id` gửi được. Chưa có hàm trong code.
+- **Input:** `{ "request_id": "uuid", "rating": "up" | "down", "share": null }`. `share` là `{ "question", "answer" }` chỉ khi người dùng bật "Gửi câu hỏi này cho tác giả" cho đúng câu đó. Mặc định `share` là null.
+- **Output:** `200` `{ "saved": true }`.
+- **Quy tắc:** mỗi `request_id` một lần. Không có `share` thì không lưu nội dung câu hỏi hay câu trả lời. Có `share` thì chỉ lưu cục bộ trên máy tác giả, xóa sau đồ án.
+- **Lỗi:** `UNAUTHENTICATED` (401), `NOT_FOUND` (404, không phải câu của mình hoặc không còn), `ALREADY_SENT` (409).
+- **Ví dụ:** `await supabase.functions.invoke('ask-atom-feedback', body: {'request_id': id, 'rating': 'up', 'share': null});`
+
 ## 5. Lịch sử
 
 | Phiên bản | Ngày | Thay đổi |
 |---|---|---|
 | 0.1 | 2026-10-22 | Bản nháp đầu |
 | 1.0 | 2026-10-22 | Đã thống nhất v1.0 |
+| nháp | 2026-10-30 | Thêm `ask-atom` và `ask-atom-feedback`. Chưa chọn cách hiện chữ. Chưa có hàm |

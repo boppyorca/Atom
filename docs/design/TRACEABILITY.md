@@ -90,10 +90,21 @@ Kiểm chung: `supabase/tests/rls_enabled_test.sql` (mọi bảng `public` bật
 | `extract-skills` | Edge | F-006, F-007, F-018 |
 | `analyze-gap` | Edge | F-006, F-014, F-018 |
 | `delete-account` | Edge | F-002 |
+| `ask-atom` | Edge | F-026, F-028 |
+| `ask-atom-feedback` | Edge | F-027 |
 
-## 5. Lịch sử
+## 5. Chatbot hỏi tài liệu (ADR-0012, chưa làm)
+
+| F | Màn hình | Bảng | RPC / Edge Function | ADR | Test |
+|---|---|---|---|---|---|
+| F-026 Hỏi tài liệu | Chưa có số màn. S-19 là ô chat cũ | Chưa có bảng nhật ký. Không ghi nội dung câu hỏi | `ask-atom` | ADR-0012 | `scripts/kb-lint`, `scripts/eval-chat`, `scripts/test_kb_lint.py`, `scripts/test_eval_chat.py`. Chưa có file test cho hàm ask-atom |
+| F-027 Phản hồi | Chưa có số màn | Chưa có bảng | `ask-atom-feedback` | ADR-0012 | Chưa có file test |
+| F-028 Đồng ý doc_chat | Chưa có số màn. S-08 là đồng ý trích skill | Chưa có loại `doc_chat`. Bảng `ai_consents` hiện một dòng mỗi người | `ask-atom` kiểm đồng ý | ADR-0012 | Chưa có file test |
+
+## 6. Lịch sử
 
 | Phiên bản | Ngày | Thay đổi |
 |---|---|---|
 | 0.1 | 2026-10-22 | Bản nháp đầu |
 | 1.0 | 2026-10-22 | Đã thống nhất v1.0 |
+| nháp | 2026-10-30 | Thêm F-026, F-027, F-028. Khung `knowledge/` và bộ chấm. Chưa có màn, bảng, hàm |

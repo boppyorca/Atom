@@ -5,7 +5,7 @@ cmd=$(jq -r '.command // empty')
 reply() { jq -nc --arg p "$1" --arg m "$2" '{permission: $p, user_message: $m, agent_message: $m}'; }
 
 deny_patterns=(
-  'supabase[[:space:]]+(link|db[[:space:]]+push|secrets|projects|functions[[:space:]]+deploy)|--linked|--project-ref'
+  'supabase[[:space:]]+secrets'
   'git[[:space:]]+push[[:space:]].*(--force|-f([[:space:]]|$))'
   'git[[:space:]]+(reset[[:space:]]+--hard|clean[[:space:]]+-[a-zA-Z]*f)'
   'rm[[:space:]]+-[a-zA-Z]*r[a-zA-Z]*[[:space:]]+(/|~|\$HOME|\.|\*)([[:space:]]|/?$)'

@@ -1,4 +1,4 @@
-.PHONY: check check-db check-all check-ai doctor docs-check next-ticket
+.PHONY: check check-db check-all check-ai doctor docs-check next-ticket kb-lint eval-chat
 
 doctor:
 	@bash scripts/doctor.sh
@@ -10,10 +10,20 @@ next-ticket:
 	@bash scripts/next_ticket.sh
 
 check:
+	python3 scripts/kb-lint
+	python3 scripts/eval-chat --dry
+	python3 scripts/test_kb_lint.py
+	python3 scripts/test_eval_chat.py
 	flutter pub get
 	dart format --set-exit-if-changed .
 	flutter analyze
 	flutter test
+
+kb-lint:
+	python3 scripts/kb-lint
+
+eval-chat:
+	python3 scripts/eval-chat
 
 check-db:
 	@docker info >/dev/null 2>&1 || { echo "Docker is not running. Start Docker Desktop first."; exit 1; }

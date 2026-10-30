@@ -213,6 +213,10 @@
   "chatAccepted": "Accepted",
   "chatRejected": "Rejected",
   "suggestionBecause": "Why:",
+  "suggestionCheckFile": "This can be checked from a source file.",
+  "suggestionCheckPackage": "This can be checked from a declared library.",
+  "suggestionCheckNone": "This cannot be checked from source code.",
+  "suggestionHistoryPartial": "The commit history was not fully read. This is not a total.",
   "githubRateLimited": "GitHub is limiting requests. Try again later.",
   "githubNotFound": "The GitHub account or repository was not found."
 }

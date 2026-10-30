@@ -1,5 +1,5 @@
 import { githubErrorCode } from './github_repos.ts'
-import { parsePubspec } from './extract.ts'
+import { parsePackageJson, parsePubspec } from './extract.ts'
 
 export type CommitFile = { filename: string; additions: number }
 
@@ -96,6 +96,8 @@ export function scoreAuthorCommits(input: {
   commits: RawCommit[]
   skills: SkillPathRule[]
   repoDependencies: string[]
+  // True only when the oldest commit in this list is the start of the saved login's history.
+  reachedRoot?: boolean
 }): RepoCommitScore | null {
   const login = input.login.toLowerCase()
   const repoDependencies = new Set(input.repoDependencies.map((name) => name.toLowerCase()))
@@ -109,7 +111,13 @@ export function scoreAuthorCommits(input: {
     .filter((commit) => commit.files.length > 0)
     .sort((a, b) => a.date.localeCompare(b.date))
 
-  if (kept.length > 0 && kept[0].files.reduce((sum, file) => sum + file.additions, 0) > 1000) {
+  // A huge oldest commit is treated as a template dump only when we reached the root.
+  // A cut-short scan's oldest commit is not the first commit, so it stays.
+  if (
+    input.reachedRoot === true &&
+    kept.length > 0 &&
+    kept[0].files.reduce((sum, file) => sum + file.additions, 0) > 1000
+  ) {
     kept.shift()
   }
 
@@ -146,12 +154,58 @@ export function scoreAuthorCommits(input: {
   }
 }
 
+export const commitScanBudget = {
+  maxRepos: 10,
+  maxCalls: 240,
+  maxDetailsPerRepo: 20,
+  listPageSize: 100,
+  manifestBytes: 200_000,
+  callTimeoutMs: 8_000,
+}
+
+export type CallBudget = { used: number; maxCalls: number }
+
+export function scanMeetsEvidenceBar(score: RepoCommitScore): boolean {
+  const spanMs = new Date(score.lastCommitAt).getTime() - new Date(score.firstCommitAt).getTime()
+  return score.validCommitCount >= 5 && score.linesAuthored >= 200 && spanMs >= 14 * 24 * 60 * 60 * 1000
+}
+
 type GithubCommit = {
   sha?: string
   author?: { login?: string | null } | null
   parents?: unknown[]
   commit?: { author?: { date?: string } }
   files?: { filename?: string; additions?: number }[]
+}
+
+type ManifestPayload = { size?: number; content?: string }
+
+function reserve(budget: CallBudget): boolean {
+  if (budget.used >= budget.maxCalls) return false
+  budget.used += 1
+  return true
+}
+
+async function githubFetch(
+  budget: CallBudget,
+  fetchImpl: typeof fetch,
+  url: string,
+  headers: HeadersInit,
+): Promise<Response | 'RATE_LIMITED' | 'GITHUB_UNAVAILABLE'> {
+  if (!reserve(budget)) return 'RATE_LIMITED'
+  try {
+    return await fetchImpl(url, { headers, signal: AbortSignal.timeout(commitScanBudget.callTimeoutMs) })
+  } catch {
+    return 'GITHUB_UNAVAILABLE'
+  }
+}
+
+function namesFromManifest(payload: ManifestPayload, parse: (text: string) => string[]): string[] {
+  if (typeof payload.size === 'number' && payload.size > commitScanBudget.manifestBytes) return []
+  if (typeof payload.content !== 'string') return []
+  const text = atob(payload.content.replaceAll('\n', ''))
+  if (text.length > commitScanBudget.manifestBytes) return []
+  return parse(text)
 }
 
 export async function loadRepoCommitScore(input: {
@@ -161,63 +215,113 @@ export async function loadRepoCommitScore(input: {
   login: string
   skills: SkillPathRule[]
   repoDependencies: string[]
-}): Promise<RepoCommitScore & { orgRepo: boolean } | null | string> {
+  budget: CallBudget
+}): Promise<RepoCommitScore & { orgRepo: boolean; scanTruncated: boolean; listedCommitCount: number } | null | string> {
   const headers = {
     Authorization: `Bearer ${input.token}`,
     Accept: 'application/vnd.github+json',
     'User-Agent': 'atom',
   }
   const encoded = input.fullName.split('/').map(encodeURIComponent).join('/')
-  const repo = await input.fetch(`https://api.github.com/repos/${encoded}`, { headers })
-  if (!repo.ok) {
-    return githubErrorCode(repo.status, repo.headers.get('x-ratelimit-remaining'))
-  }
+  const repo = await githubFetch(input.budget, input.fetch, `https://api.github.com/repos/${encoded}`, headers)
+  if (typeof repo === 'string') return repo
+  if (!repo.ok) return githubErrorCode(repo.status, repo.headers.get('x-ratelimit-remaining'))
   const details = await repo.json() as { archived?: boolean; owner?: { type?: string } }
   if (details.archived === true) return null
+
   const foundDependencies = [...input.repoDependencies]
-  const pubspec = await input.fetch(`https://api.github.com/repos/${encoded}/contents/pubspec.yaml`, { headers })
-  if (pubspec.ok) {
-    const payload = await pubspec.json() as { content?: string }
-    if (typeof payload.content === 'string') {
-      foundDependencies.push(...parsePubspec(atob(payload.content.replaceAll('\n', ''))))
-    }
-  } else if (pubspec.status !== 404) {
-    return githubErrorCode(pubspec.status, pubspec.headers.get('x-ratelimit-remaining'))
+  // Root only. Nested manifests are not read.
+  // Only these two files have a package name in the 13 rules: pub flutter/provider, npm react.
+  // requirements.txt, pyproject.toml, go.mod, Cargo.toml, pom.xml, build.gradle,
+  // Gemfile, composer.json and csproj are not fetched.
+  const manifests: { path: string; parse: (text: string) => string[] }[] = [
+    { path: 'pubspec.yaml', parse: parsePubspec },
+    { path: 'package.json', parse: parsePackageJson },
+  ]
+  for (const manifest of manifests) {
+    const response = await githubFetch(
+      input.budget,
+      input.fetch,
+      `https://api.github.com/repos/${encoded}/contents/${manifest.path}`,
+      headers,
+    )
+    if (typeof response === 'string') return response
+    if (response.status === 404) continue
+    if (!response.ok) return githubErrorCode(response.status, response.headers.get('x-ratelimit-remaining'))
+    foundDependencies.push(...namesFromManifest(await response.json() as ManifestPayload, manifest.parse))
   }
-  const listed = await input.fetch(
-    `https://api.github.com/repos/${encoded}/commits?author=${encodeURIComponent(input.login)}&per_page=100`,
-    { headers },
+
+  const listed = await githubFetch(
+    input.budget,
+    input.fetch,
+    `https://api.github.com/repos/${encoded}/commits?author=${encodeURIComponent(input.login)}&per_page=${commitScanBudget.listPageSize}`,
+    headers,
   )
-  if (!listed.ok) {
-    return githubErrorCode(listed.status, listed.headers.get('x-ratelimit-remaining'))
-  }
+  if (typeof listed === 'string') return listed
+  if (!listed.ok) return githubErrorCode(listed.status, listed.headers.get('x-ratelimit-remaining'))
   const body = await listed.json() as GithubCommit[]
   if (!Array.isArray(body)) return 'GITHUB_UNAVAILABLE'
+
+  const login = input.login.toLowerCase()
+  const candidates = body.filter((item) => {
+    const author = item.author?.login?.toLowerCase()
+    const parents = Array.isArray(item.parents) ? item.parents.length : 1
+    return Boolean(item.sha) && author === login && parents <= 1 && Boolean(item.commit?.author?.date)
+  })
   const detailed: RawCommit[] = []
-  for (const item of body.slice(0, 20)) {
-    if (!item.sha) continue
-    const detail = await input.fetch(`https://api.github.com/repos/${encoded}/commits/${item.sha}`, { headers })
-    if (!detail.ok) {
-      return githubErrorCode(detail.status, detail.headers.get('x-ratelimit-remaining'))
+  let stoppedEarly = false
+  for (const item of candidates) {
+    if (detailed.length >= commitScanBudget.maxDetailsPerRepo) {
+      stoppedEarly = true
+      break
     }
+    const provisional = scoreAuthorCommits({
+      login: input.login,
+      commits: detailed,
+      skills: input.skills,
+      repoDependencies: foundDependencies,
+      reachedRoot: false,
+    })
+    if (provisional && scanMeetsEvidenceBar(provisional)) {
+      stoppedEarly = true
+      break
+    }
+    const detail = await githubFetch(
+      input.budget,
+      input.fetch,
+      `https://api.github.com/repos/${encoded}/commits/${item.sha}`,
+      headers,
+    )
+    if (typeof detail === 'string') return detail
+    if (!detail.ok) return githubErrorCode(detail.status, detail.headers.get('x-ratelimit-remaining'))
     const payload = await detail.json() as GithubCommit
     detailed.push({
-      sha: item.sha,
-      authorLogin: payload.author?.login ?? item.author?.login ?? null,
-      date: payload.commit?.author?.date ?? item.commit?.author?.date ?? '',
-      parentCount: Array.isArray(payload.parents) ? payload.parents.length : 1,
+      sha: item.sha as string,
+      authorLogin: item.author?.login ?? null,
+      date: item.commit?.author?.date ?? '',
+      parentCount: 1,
       files: (payload.files ?? [])
         .filter((file) => typeof file.filename === 'string')
         .map((file) => ({ filename: file.filename as string, additions: file.additions ?? 0 })),
     })
   }
+
+  const pageFull = body.length >= commitScanBudget.listPageSize
+  const openedAll = detailed.length === candidates.length
+  const reachedRoot = !pageFull && openedAll && !stoppedEarly
   const score = scoreAuthorCommits({
     login: input.login,
     commits: detailed.filter((commit) => commit.date !== ''),
     skills: input.skills,
     repoDependencies: foundDependencies,
+    reachedRoot,
   })
   if (!score) return null
-  return { ...score, orgRepo: details.owner?.type === 'Organization' }
+  return {
+    ...score,
+    orgRepo: details.owner?.type === 'Organization',
+    scanTruncated: pageFull || stoppedEarly || !openedAll,
+    listedCommitCount: candidates.length,
+  }
 }
 

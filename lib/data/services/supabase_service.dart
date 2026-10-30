@@ -3,7 +3,6 @@ import 'package:harness_app/domain/analysis/suggestion.dart';
 import 'package:harness_app/domain/models/app_notice.dart';
 import 'package:harness_app/domain/models/chat_turn.dart';
 import 'package:harness_app/domain/models/community_post.dart';
-import 'package:harness_app/domain/models/evidence.dart';
 import 'package:harness_app/domain/models/github_repo.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -202,7 +201,9 @@ class SupabaseService {
   Future<List<SkillSuggestion>> pendingSuggestions() async {
     final rows = await client
         .from('skill_suggestions')
-        .select('id, name, signals, evidence_ids, commit_metrics')
+        .select(
+          'id, name, signals, evidence_ids, commit_metrics, skill_catalog(verifiability)',
+        )
         .eq('profile_id', _userId)
         .eq('status', 'pending');
     final evidence = await client
@@ -241,10 +242,14 @@ class SupabaseService {
                     (entry.value as Map)['org_repo'] == true)
                   'repo tổ chức ${entry.key}',
           ],
-          because: [
+          because: {
             for (final signal in (row['signals'] as List? ?? []))
               if (signal is String) label(signal),
-          ].toSet().join(', '),
+          }.join(', '),
+          verifiability: row['skill_catalog'] is Map
+              ? (row['skill_catalog']['verifiability'] as String? ?? '')
+              : '',
+          historyPartial: historyWasCutShort(row['commit_metrics']),
         ),
     ];
   }

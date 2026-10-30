@@ -213,6 +213,10 @@
   "chatAccepted": "Đã nhận",
   "chatRejected": "Đã bỏ",
   "suggestionBecause": "Vì sao:",
+  "suggestionCheckFile": "Có thể đối chiếu bằng file mã nguồn.",
+  "suggestionCheckPackage": "Có thể đối chiếu bằng thư viện đã khai báo.",
+  "suggestionCheckNone": "Không kiểm được bằng mã nguồn.",
+  "suggestionHistoryPartial": "Chưa đọc hết lịch sử commit. Đây không phải tổng số commit.",
   "githubRateLimited": "GitHub đang giới hạn số lần gọi. Thử lại sau.",
   "githubNotFound": "Không tìm thấy tài khoản hoặc repo trên GitHub."
 }

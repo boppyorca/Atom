@@ -50,9 +50,54 @@ flowchart LR
 - **Web:** một trang tĩnh gọi `get_public_profile` (ADR-0007).
 - Không có realtime, push, analytics trong MVP.
 
+### Chatbot hỏi tài liệu (ADR-0012, chưa làm)
+
+Ô chat cũ không nằm trên sơ đồ này và không đổi. Sơ đồ dưới là cửa thứ hai.
+
+```mermaid
+flowchart LR
+    Phone["App Flutter"] --> Ask["ask-atom trên Supabase web"]
+    Ask --> Gate["Đăng nhập, đồng ý doc_chat, độ dài, một việc tại một thời điểm"]
+    Gate --> Engine["Bộ tìm tài liệu"]
+    Engine --> Ollama["Ollama trên macOS"]
+    Engine --> Docs["knowledge/ trong repo"]
+```
+
+- Điện thoại không gọi thẳng bộ tìm, và không giữ chìa khóa.
+- Ollama chạy trên macOS, không nằm trong Docker. Bộ tìm, nếu là AnythingLLM, chạy trong Docker và gọi Ollama qua địa chỉ nội bộ của máy. Chưa chọn AnythingLLM hay pgvector.
+- Khóa của bot tài liệu, nếu có, chỉ nằm trong env cục bộ. Câu "không có khóa AI" ở mục 2 ở trên nói về trích skill theo ADR-0010, không nói về ô chat cũ hay bot này.
+- Bot này không gọi Groq hay Z.ai.
+
+### Ô chat cũ
+
+Đọc từ code ngày 2026-10-30. Hàm là `chat-ask`, không phải `ask-atom`.
+
+- Máy nhà là Ollama. Địa chỉ thử lần lượt: biến `OLLAMA_BASE_URL` nếu có, rồi `http://host.docker.internal:11434`, rồi `http://127.0.0.1:11434` (`supabase/functions/chat-ask/index.ts` dòng 25–28). Hỏi model tại đường `/api/chat` (dòng 44). Tên model: model nào bắt đầu bằng `atom-local`, không có thì lấy model đầu danh sách `/api/tags` (dòng 42). Không có một tên model cố định trong code. Timeout danh sách model 2 giây (dòng 32). Timeout câu trả lời 20 giây (dòng 47).
+- Hết máy nhà thì Groq, rồi Z.ai (`supabase/functions/_shared/chat.ts` dòng 63–68). Groq gọi `https://api.groq.com/openai/v1/chat/completions`, model lấy từ `GROQ_MODEL`, không có thì `openai/gpt-oss-20b` (`chat-ask/index.ts` dòng 304–308). Z.ai gọi `https://api.z.ai/api/paas/v4/chat/completions`, model `glm-4.7-flash` (dòng 312–316). Timeout mỗi bên 20 giây (dòng 83).
+- Khóa gắn bằng `Deno.env.get('GROQ_API_KEY')` và `Deno.env.get('ZAI_API_KEY')` (dòng 300–301). Tên biến khai trong `supabase/config.toml` dòng 421–422, giá trị lấy từ env, không ghi trong file. Không có khóa thì bỏ qua bên đó (dòng 304 và 312).
+- Đồng ý: hàm `chat_gate` kiểm bảng `ai_consents`, cột `granted` đúng (`supabase/migrations/20261028140000_chat.sql` dòng 82–86). Không có loại đồng ý riêng cho ô chat. JWT không đọc được thì hàm trả `CONSENT_REQUIRED` (`chat-ask/index.ts` dòng 268).
+- 30 câu mỗi tháng: `app_settings` khóa `chat_quota_per_month`, giá trị `30` (migration chat dòng 4–5). Đếm dòng `chat_messages` vai trò `user` từ đầu tháng giờ Việt Nam (`chat.sql` dòng 88–96, `ai_month_start` ở `supabase/migrations/20261025150000_skill_suggestions.sql` dòng 91–97). Câu chỉ được ghi sau khi có trả lời (`chat-ask/index.ts` dòng 321–325), nên lượt lỗi không vào bộ đếm.
+- Hội thoại lưu ở `chat_threads`, `chat_messages` (cột `body`, `provider`), và `chat_proposals` (`chat.sql` dòng 8–39).
+
+### Giới hạn AI
+
+Một bảng cho mọi giới hạn đang mô tả. Bot mới chưa có dòng trong `app_settings`.
+
+| Việc | Giới hạn | Nơi cấu hình |
+|---|---|---|
+| Ô chat cũ, số câu | 30 câu của người dùng mỗi tháng | `app_settings.chat_quota_per_month`, đếm trong `chat_gate` |
+| Ô chat cũ, độ dài | 1 đến 4000 ký tự | `chat_gate` trong `supabase/migrations/20261028140000_chat.sql` dòng 79–80 |
+| Trích skill | 3 lượt thành công hoặc đang chạy mỗi tháng | `app_settings.ai_quota_extract_per_month`, đếm trong `ai_begin_job` (`supabase/migrations/20261028120000_gap_community_notices.sql` dòng 44–55) |
+| So với tin tuyển dụng | 10 lượt thành công hoặc đang chạy mỗi tháng | `app_settings.ai_quota_gap_per_month`, cùng hàm `ai_begin_job` |
+| Việc trích hoặc so đang chạy | Một việc mỗi loại cho mỗi người | `ai_begin_job`, dòng 35–41 của migration trên |
+| Hết giờ việc trích hoặc so | 120 giây | `app_settings.ai_timeout_seconds` |
+| Bot hỏi tài liệu, độ dài | 1 đến 300 ký tự | ADR-0012 mục 9 và hợp đồng `ask-atom`. Chưa có khóa trong `app_settings` |
+| Bot hỏi tài liệu, một việc tại một thời điểm | Cả hệ thống một yêu cầu AI | ADR-0012 mục 9. Chưa có bảng khóa |
+| Bot hỏi tài liệu, trần mỗi giờ | Chưa có số | Chưa có chỗ cấu hình. Chốt sau khi đo |
+
 ## 2. Cấu hình và môi trường
 
-- Chỉ dùng Supabase **local** khi phát triển (AGENTS.md quy tắc 3). Dự án Supabase thật cho thử nghiệm kín [MỞ], tạo sau, do chủ dự án làm.
+- Supabase trên web được phép khi chủ dự án yêu cầu (AGENTS.md quy tắc 3). Mã dự án trên web: `quphatkscppfwxzfkrnx`. Không ghi khóa service_role hay mật khẩu database vào repo. Đổi schema vẫn đi qua `supabase/migrations`. Chép dữ liệu người dùng lên web chỉ khi chủ dự án yêu cầu lần chép đó.
 - App nhận `SUPABASE_URL` và `SUPABASE_PUBLISHABLE_KEY` qua `--dart-define`; đọc trong `lib/config/env.dart` bằng `String.fromEnvironment`. Giá trị không commit; `.env.example` chỉ có tên biến. (Đổi tên `SUPABASE_ANON_KEY` → `SUPABASE_PUBLISHABLE_KEY` trong `.env.example` khi triển khai [GIẢ ĐỊNH]; cùng một giá trị khóa.)
 - App nhận thêm `PUBLIC_PROFILE_BASE_URL` (tên miền GitHub Pages, ADR-0007) để tạo link chia sẻ.
 - Secret của Edge Functions (token GitHub chỉ đọc dữ liệu công khai; không có khóa AI, ADR-0010) đặt trong file env cục bộ đã bị `.gitignore` chặn (`.env*`), không đọc/ghi bởi agent.
